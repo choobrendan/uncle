@@ -1,0 +1,150 @@
+.neon-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    font-family: 'Oxanium';
+    display: flex;
+  }
+  
+  .neon-input-wrapper {
+    position: relative;
+    margin-bottom: 10px;
+  }
+  
+  input{
+    font-family: 'Oxanium';
+
+  }
+  .neon-input {
+    width: 90%;
+    padding: 12px 16px;
+    background-color: rgba(10, 10, 20, 0.8);
+    color: #0ff;
+    border: 2px solid #0ff;
+    border-radius: 4px;
+    font-size: 16px;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 
+                inset 0 0 10px rgba(0, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    z-index: 2;
+  }
+  
+  .neon-input:focus {
+    outline: none;
+    color: #fff;
+    border-color: #ff00ff;
+    box-shadow: 0 0 10px 5px rgba(255, 0, 255, 0.7), 
+                inset 0 0 10px 2px rgba(255, 0, 255, 0.3);
+  }
+  
+  .neon-input::placeholder {
+    color: rgba(0, 255, 255, 0.6);
+  }
+  
+  .neon-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 1;
+    /* animation: neonPulse 2s infinite alternate; */
+  }
+  
+  .neon-glow-wide {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 8px;
+    pointer-events: none;
+    z-index: 0;
+    /* animation: neonPulseWide 3s infinite alternate; */
+  }
+  
+  .neon-dropdown {
+    position: absolute;
+    width: 75%;
+    max-height: 250px;
+    top:60px;
+    overflow-y: auto;
+    background-color: rgba(20, 20, 40, 0.95);
+    border: 1px solid #0ff;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(0, 255, 255, 0.5);
+    z-index: 3;
+    animation: dropdownAppear 0.3s ease forwards;
+  }
+  
+  .neon-suggestion {
+    padding: 10px 16px;
+    color: #0ff;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  }
+  
+  .neon-suggestion:hover,
+  .neon-suggestion.active {
+    background-color: rgba(0, 255, 255, 0.15);
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8),
+                 0 0 12px rgba(0, 255, 255, 0.8);
+  }
+  
+  
+  @keyframes dropdownAppear {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* For a retro CRT effect */
+  @media (min-width: 768px) {
+    .neon-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0.15;
+    }
+  }
+
+  .select-button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color:  #c3ff9e;
+    border: none;
+    color: black;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .select-button:hover {
+    background-color: #c3ff9e;
+  }
+
+  .select-button:disabled {
+    background-color: #edffe2;
+  }
+  

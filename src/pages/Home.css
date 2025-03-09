@@ -1,0 +1,244 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Oxanium:wght@200..800&display=swap');
+  
+  .body {}
+  
+
+  
+  * {
+    box-sizing: border-box;
+  }
+  button{
+    font-family: 'Oxanium';
+  }
+  
+  .header {
+    width: 100%;
+    position:fixed;
+    z-index: 999;
+    font-family: 'Oxanium';
+    font-weight: 300;
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+  }  
+  
+  
+  .centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .scifi-button {
+    display: block;
+    position: relative;
+    font-size: 20px;
+    line-height: 1em;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    text-decoration: none;
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+    margin: 0 0px;
+    border-radius: 0;
+    overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.05, 3, 1, 1) 0s;
+  }
+  
+  
+  
+  .scifi-button:after,
+  .scifi-button:before {
+    content: "";
+    display: block;
+    position: absolute;
+    border: 2px solid #49839900;
+    width: 10px;
+    top: 0;
+    bottom: 0;
+    transition: all 0.6s cubic-bezier(0.05, 3, 1, 1) 0s;
+  }
+  
+  .scifi-button:before {
+    border-right: 0;
+    margin-right: 5px;
+    left: 0;
+  }
+  
+  .scifi-button:after {
+    border-left: 0;
+    margin-left: 5px;
+    right: 0;
+  }
+  
+  .scifi-button:hover {
+    background: #231f0140;
+  }
+  
+  .scifi-button:hover:after,
+  .scifi-button:hover:before {
+    border-color: #c3ff9e;
+  }
+  
+
+ 
+  
+  .content {
+    display: block;
+    top: 0;
+  }
+  
+  .content-1 {
+    height: 100vh;
+    width: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    /* position: absolute; */
+    top: 0;
+    left: 0;
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+    justify-content: space-around;
+    text-align: center;
+  
+  }
+  
+  .content-desc {
+  
+    height: 100vh;
+    width: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+    justify-content: space-around;
+    text-align: center;
+  
+  }
+  
+  .backdrop-filter {
+    background-color: transparent;
+    /* display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center; */
+    height: 75%;
+    min-height: 650px;
+    width: 40%;
+    min-width: 450px;
+    perspective: 1000px;
+  
+  }
+  
+  .flip-card-inner {
+  
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+  
+  }
+  
+  /* Do an horizontal flip when you move the mouse over the flip box container */
+  .backdrop-filter:hover .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+  
+  /* Position the front and back side */
+  .flip-card-front,
+  .flip-card-back {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(17, 25, 40, 0.25);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    filter: drop-shadow(0 30px 10px rgba(0, 0, 0, 0.125));
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    /* Safari */
+    backface-visibility: hidden;
+  }
+  
+  /* Style the front side (fallback if image is missing) */
+  .flip-card-front {
+    background-color: #c3ff9e20;
+    color: black;
+  }
+  
+  /* Style the back side */
+  .flip-card-back {
+    background-color: #c3ff9e20;
+    transform: rotateY(180deg);
+  }
+  
+  
+  
+  .how-would-you {
+    width: 360px;
+  }
+  
+  .customised {
+    width: 360px;
+  }
+  
+ 
+  
+  .customised {
+    text-align: center;
+  }
+  
+  #banner-text {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  #cursor {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1px;
+    height: 20px;
+    background-color: orange;
+    animation: blink 0.75s step-end infinite;
+  }
+  
+  @keyframes blink {
+  
+    from,
+    to {
+      background-color: transparent;
+    }
+  
+    50% {
+      background-color: orange;
+    }
+  }
+ 
+  
+  /* input */
+  
+  input[type=text] {
+    background-color: #16140e;
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+    font-family: 'Oxanium';
+    font-weight: 200;
+    font-size: 20px;
+    border-top: 1px solid #c3ff9e;
+    border-left: 1px solid #c3ff9e;
+    border-bottom: 0px;
+    border-right: 0px;
+    margin: 5px;
+    box-shadow:
+      0 0px 10px 5px rgba(195, 255, 158, 0.5),
+      /* shadow on top */
+      0px 0 10px 2px rgba(195, 255, 158, 0.5);
+    /* shadow on left */
+  
+  }
