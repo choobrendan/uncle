@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSpeechRecognition } from '../composables/useSpeechRecognition';
 import './VoiceButton.css';
-import TextBox from './TextBox';
+import TextVoice from './TextVoice';
 
-const VoiceButton = ({ toggleMainTextDiv }) => {
+const VoiceButton = ({ toggleMainTextDiv,selectionIndex,setSelectionIndex }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [result, setResult] = useState('');
   const [error, setError] = useState('');
@@ -52,7 +52,7 @@ const VoiceButton = ({ toggleMainTextDiv }) => {
   };
 
   const sendVoice = () => {
-    fetch('http://localhost:8000/send-voice', {
+    fetch('http://localhost:8000/send-message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message: result }),
@@ -118,7 +118,7 @@ const VoiceButton = ({ toggleMainTextDiv }) => {
 
       {isExpanded && (
         <div>
-          {error ? <p>{error}</p> : <TextBox text={result} onInput={voiceTimer} />}
+          {error ? <p>{error}</p> : <TextVoice text={result} onInput={voiceTimer} selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex} />}
         </div>
       )}
     </section>

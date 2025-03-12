@@ -5,7 +5,7 @@ import Background from '../components/Background';
 import VoiceButton from '../components/VoiceButton';
 import TextBox from '../components/TextBox';
 import Header from '../components/Header';
-const App = () => {
+const Home = ({selectionIndex,setSelectionIndex}) => {
     
   // State variables
   const [mouseX, setMouseX] = useState('');
@@ -29,7 +29,7 @@ const App = () => {
   const [showRender, setShowRender] = useState(true);
 
 
-  const [selectionIndex, setSelectionIndex] = useState(-1);
+
 
   const typingInterval = useRef(null);
   const deletingInterval = useRef(null);
@@ -148,9 +148,9 @@ const App = () => {
   useEffect(() => {
     console.log(selectionIndex);
   
-    if (selectionIndex === 0) {
+    if (selectionIndex === 1) {
       setTextSizeModifier(prevModifier => prevModifier * 1.25);
-    } else if (selectionIndex === 1) {
+    } else if (selectionIndex === 2) {
       setTextSizeModifier(prevModifier => prevModifier / 1.25);
     }
   
@@ -185,7 +185,7 @@ const App = () => {
   };
 
   return (
-    <div  style={{ display:"flex",alignItems: 'center', justifyContent: 'center' }}onMouseMove={handleMouseMove}>
+    <div  style={{ alignItems: 'center', justifyContent: 'center' }}onMouseMove={handleMouseMove}>
 
 
       <div className="content">
@@ -236,10 +236,10 @@ const App = () => {
           </div>
         </div>
       </div>
-
+      <VoiceButton  setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex}/>
       <Background showRender={false} />
     </div>
   );
 };
 
-export default App;
+export default Home;

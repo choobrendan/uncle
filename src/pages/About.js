@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import AboutCarousel from '../components/AboutCarousel';
 import Background from '../components/Background';
-
-const AboutPage = () => {
+import VoiceButton from '../components/VoiceButton';
+const AboutPage = ({setSelectionIndex, selectionIndex}) => {
   const [showRender, setShowRender] = useState(true);
 
   return (
@@ -10,6 +10,7 @@ const AboutPage = () => {
         
       <AboutCarousel />
       <Background showRender={false} />
+      <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
     </div>
   );
 };

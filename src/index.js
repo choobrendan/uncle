@@ -1,26 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home'; // Assuming Home.js exists in the same directory
 import About from './pages/About';
 import Header from './components/Header';
-import VoiceButton from './components/VoiceButton';
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-          <VoiceButton  />
-          <Header></Header>
+
+function App() {
+  const [selectionIndex, setSelectionIndex] = useState(-1);
+
+  return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
+      <React.StrictMode>
+        <Header />
+        <Routes>
+          <Route 
+            path="/" 
+            element={<Home selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex} />} 
+          />
+          <Route 
+            path="/about" 
+            element={<About selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex} />} 
+          />
+        </Routes>
+      </React.StrictMode>
     </Router>
-  </React.StrictMode>
-);
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
