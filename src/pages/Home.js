@@ -5,8 +5,8 @@ import Background from '../components/Background';
 import VoiceButton from '../components/VoiceButton';
 import TextBox from '../components/TextBox';
 import Header from '../components/Header';
-const Home = ({selectionIndex,setSelectionIndex}) => {
-    
+const Home = ({selectionIndex,setSelectionIndex,textSizeModifier,brightnessIndex, setBrightnessIndex}) => {
+  
   // State variables
   const [mouseX, setMouseX] = useState('');
   const [mouseY, setMouseY] = useState('');
@@ -23,7 +23,7 @@ const Home = ({selectionIndex,setSelectionIndex}) => {
     letterSpacing: '',
     fontFamily: ''
   });
-  const [textSizeModifier, setTextSizeModifier] = useState(1);
+
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [message, setMessage] = useState('');
   const [showRender, setShowRender] = useState(true);
@@ -145,20 +145,7 @@ const Home = ({selectionIndex,setSelectionIndex}) => {
   };
 
 
-  useEffect(() => {
-    console.log(selectionIndex);
-  
-    if (selectionIndex === 1) {
-      setTextSizeModifier(prevModifier => prevModifier * 1.25);
-    } else if (selectionIndex === 2) {
-      setTextSizeModifier(prevModifier => prevModifier / 1.25);
-    }
-  
-    // Set selectionIndex to -1 once the textSizeModifier is updated
-    setSelectionIndex(-1);
-  
-    console.log(textSizeModifier);
-  }, [selectionIndex]);
+
   
   
 
@@ -185,10 +172,12 @@ const Home = ({selectionIndex,setSelectionIndex}) => {
   };
 
   return (
-    <div  style={{ alignItems: 'center', justifyContent: 'center' }}onMouseMove={handleMouseMove}>
+    <div  style={{  alignItems: 'center', justifyContent: 'center', }}onMouseMove={handleMouseMove}>
 
 
-      <div className="content">
+      <div className="content" 
+      //style={{filter:`brightness(${1*brightnessIndex}`}}
+      >
         <div className="content-1">
           <div className="how-would-you">
             <p style={{ fontFamily: 'Oxanium', fontWeight: 200, fontSize: `${36 * textSizeModifier}px` }}>
@@ -236,8 +225,9 @@ const Home = ({selectionIndex,setSelectionIndex}) => {
           </div>
         </div>
       </div>
-      <VoiceButton  setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex}/>
-      <Background showRender={false} />
+      <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
+      <Background showRender={false} setBrightnessIndex={setBrightnessIndex}
+                    brightnessIndex={brightnessIndex}/>
     </div>
   );
 };

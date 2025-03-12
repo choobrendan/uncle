@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FaceRender from '../components/FaceRender';
 import HandRender from '../components/HandRender';
 import "./Background.css"
-const Background = ({ showRender }) => {
+const Background = ({ showRender,brightnessIndex }) => {
   const [mouseX, setMouseX] = useState('');
   const [mouseY, setMouseY] = useState('');
   const [gazeX, setGazeX] = useState(0);
@@ -24,7 +24,7 @@ const Background = ({ showRender }) => {
   }, []);
 
   return (
-    <div className="bg">
+    <div className="bg" style={{filter:`brightness(${1*brightnessIndex}`}}>
       <div className="coordinates">
         <div className="mouse-coordinates">
           <div className="mouse-box">
