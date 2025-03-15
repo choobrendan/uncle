@@ -10,8 +10,7 @@ const AboutPage = ({setSelectionIndex, selectionIndex,textSizeModifier,brightnes
         
       <AboutCarousel textSizeModifier={textSizeModifier}/>
       <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
-      <Background showRender={false} setBrightnessIndex={setBrightnessIndex}
-                    brightnessIndex={brightnessIndex}/>
+      
 
     </div>
   );

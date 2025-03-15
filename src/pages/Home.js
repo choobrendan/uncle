@@ -226,8 +226,7 @@ const Home = ({selectionIndex,setSelectionIndex,textSizeModifier,brightnessIndex
         </div>
       </div>
       <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
-      <Background showRender={false} setBrightnessIndex={setBrightnessIndex}
-                    brightnessIndex={brightnessIndex}/>
+
     </div>
   );
 };
