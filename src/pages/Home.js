@@ -5,8 +5,17 @@ import Background from '../components/Background';
 import VoiceButton from '../components/VoiceButton';
 import TextBox from '../components/TextBox';
 import Header from '../components/Header';
-const Home = ({selectionIndex,setSelectionIndex,textSizeModifier,brightnessIndex, setBrightnessIndex}) => {
-  
+import { useOutletContext } from 'react-router-dom';
+
+function Home() {
+  const {
+    selectionIndex,
+    setSelectionIndex,
+    textSizeModifier,
+    brightnessIndex,
+    setBrightnessIndex
+  } = useOutletContext();
+
   // State variables
   const [mouseX, setMouseX] = useState('');
   const [mouseY, setMouseY] = useState('');

@@ -46,7 +46,7 @@ function App() {
         setBrightnessIndex={setBrightnessIndex}
         brightnessIndex={brightnessIndex}
       />
-      <div class="body" style={{filter:"blur(3px)"}}>
+      <div class="body" >
       <Outlet context={{
         selectionIndex,
         setSelectionIndex,

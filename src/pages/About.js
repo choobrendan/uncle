@@ -2,7 +2,18 @@ import React, { useState } from 'react';
 import AboutCarousel from '../components/AboutCarousel';
 import Background from '../components/Background';
 import VoiceButton from '../components/VoiceButton';
-const AboutPage = ({setSelectionIndex, selectionIndex,textSizeModifier,brightnessIndex, setBrightnessIndex}) => {
+import { useOutletContext } from 'react-router-dom';
+
+function About() {
+  const {
+    selectionIndex,
+    setSelectionIndex,
+    textSizeModifier,
+    brightnessIndex,
+    setBrightnessIndex
+  } = useOutletContext();
+
+
   const [showRender, setShowRender] = useState(true);
 
   return (
@@ -16,4 +27,4 @@ const AboutPage = ({setSelectionIndex, selectionIndex,textSizeModifier,brightnes
   );
 };
 
-export default AboutPage;
+export default About;

@@ -7,7 +7,7 @@ const Header = ({ item ,brightnessIndex, setBrightnessIndex}) => {
 <div className="centered">
   <a className="scifi-button" href="/about"><router-link to="/about">About</router-link></a>
   <a className="scifi-button" href="#0">Cancel</a>
-  <a className="scifi-button" href="#0" style={{display:"flex",position:"absolute", right:"40px"}}>Sign In</a>
+  <a className="scifi-button" href="/signin" style={{display:"flex",position:"absolute", right:"40px"}}>Sign In</a>
 </div>
 <div>
 
