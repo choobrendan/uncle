@@ -230,7 +230,7 @@ function Home() {
             <p style={{ fontFamily: 'Oxanium', fontWeight: 200, fontSize: `${36 * textSizeModifier}px`}}>
               Try it out now!
             </p>
-            <TextBox selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex}/>
+            <TextBox selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex} isApiCallDisabled={true}/>
           </div>
         </div>
       </div>

@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import TextInput from './TextInput';
 import './TextBox.css';
 
-const TextBox = ({ suggestions, setSelectionIndex, selectionIndex, text, onInput }) => {
+const TextBox = ({
+  suggestions,
+  setSelectionIndex,
+  selectionIndex,
+  text,
+  onInput,
+  isApiCallDisabled = false, // New prop to control whether API call happens
+}) => {
   const [inputValue, setInputValue] = useState(text || ''); // Initialize with the text prop
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -24,6 +32,8 @@ const TextBox = ({ suggestions, setSelectionIndex, selectionIndex, text, onInput
   }, [showDropdown, filteredSuggestions, selectionIndex]);
 
   const sendText = () => {
+    if (isApiCallDisabled) return; // Skip the API call if it's disabled
+
     console.log(inputValue);
     fetch('http://localhost:8000/send-message', {
       method: 'POST',
@@ -70,24 +80,20 @@ const TextBox = ({ suggestions, setSelectionIndex, selectionIndex, text, onInput
 
   return (
     <div className="neon-container">
-      <div className="neon-input-wrapper">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => {
-            setInputValue(e.target.value);
+      <TextInput
+        value={inputValue}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+          if (!isApiCallDisabled) {
             sendText(e.target.value);
-          }}
-          onFocus={() => setShowDropdown(true)}
-          onBlur={onBlur}
-          className="neon-input"
-          placeholder="Type a prompt..."
-        />
-        <div className="neon-glow"></div>
-        <div className="neon-glow-wide"></div>
-      </div>
+          }
+        }}
+        onFocus={() => setShowDropdown(true)}
+        onBlur={onBlur}
+        placeholder="Type a prompt..."
+      />
 
-      {showDropdown && filteredSuggestions.length > 0 && (
+      {showDropdown && filteredSuggestions.length > 0 && !isApiCallDisabled && (
         <div className="neon-dropdown">
           {filteredSuggestions.map((suggestion, index) => (
             <div

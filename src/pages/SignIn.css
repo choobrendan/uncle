@@ -4,8 +4,18 @@
     align-items: center;
     height: 100vh;
     margin: 0;
-  }
 
+  }
+p{
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+}
+
+h2{
+    font-weight: 300;
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+}
 
   .signInCard {
     -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
@@ -21,6 +31,15 @@
     min-width: 800px;
     min-height: 600px;
     -webkit-backface-visibility: hidden;
-    /* Safari */
     backface-visibility: hidden;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .link-button{
+
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+    background-color: #c3ff9e00;
+
   }

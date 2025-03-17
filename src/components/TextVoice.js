@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import TextInput from './TextInput';
 import './TextBox.css';
 
 const TextVoice = ({ suggestions, setSelectionIndex, selectionIndex, text, onInput }) => {
   const [inputValue, setInputValue] = useState(text || '');
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
-  const [selectedSuggestion, setSelectedSuggestion] = useState(null);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -31,19 +31,18 @@ const TextVoice = ({ suggestions, setSelectionIndex, selectionIndex, text, onInp
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        const suggestionsList = data.map(item => ({
+        const suggestionsList = data.map((item) => ({
           id: item.id, // Extract the 'id' from each item
           name: item.text, // Extract the 'name' from each item
         }));
         setFilteredSuggestions(suggestionsList);
-        console.log(suggestionsList, "Suggestions updated");
+        console.log(suggestionsList, 'Suggestions updated');
       })
       .catch((error) => console.error('Error sending message:', error));
   };
 
   const selectSuggestion = (suggestion) => {
     setInputValue(suggestion);
-    setSelectedSuggestion(suggestion);
     if (onInput) {
       onInput(suggestion);
     }
@@ -65,19 +64,13 @@ const TextVoice = ({ suggestions, setSelectionIndex, selectionIndex, text, onInp
 
   return (
     <div className="neon-container">
-      <div className="neon-input-wrapper">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => {
-            setInputValue(e.target.value);
-          }}
-          className="neon-input"
-          placeholder="Type a prompt..."
-        />
-        <div className="neon-glow"></div>
-        <div className="neon-glow-wide"></div>
-      </div>
+      <TextInput
+        value={inputValue}
+        onChange={(e) => {
+          setInputValue(e.target.value);
+        }}
+        placeholder="Type a prompt..."
+      />
 
       {filteredSuggestions.length > 0 && (
         <div className="suggestion-buttons">

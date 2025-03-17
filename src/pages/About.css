@@ -4,6 +4,19 @@
 
 }
 
+p{
+
+    font-weight: 200;
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+}
+
+h2{
+    font-weight: 300;
+    color: #c3ff9e;
+    text-shadow: 0 0 5px #c3ff9e80;
+}
+
 body {
     display: flex;
     justify-content: center;
