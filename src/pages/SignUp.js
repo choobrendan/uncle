@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import { createClient } from '@supabase/supabase-js'
 import VoiceButton from '../components/VoiceButton';
 import TextInput from '../components/TextInput';
@@ -17,7 +17,7 @@ function SignUp() {
     brightnessIndex,
     setBrightnessIndex
   } = useOutletContext();
-
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -26,22 +26,57 @@ function SignUp() {
   const handleSignUp = async (e) => {
     e.preventDefault();
     setErrorMessage('');
-    setSuccessMessage('');
 
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+      // Check if the email already exists in the database
+      const { data: existingUser, error: fetchError } = await supabase
+        .from("userData")
+        .select()
+        .eq('email', email); // Check if email already exists
 
-      if (error) throw error;
+      if (fetchError) {
+        console.error("Error fetching user data:", fetchError);
+        return { data: null, error: fetchError };
+      }
 
-      setSuccessMessage('Success!');
-      setEmail('');
-      setPassword('');
+      // If user with this email exists, handle it accordingly
+      if (existingUser.length > 0) {
+        setErrorMessage('Email is already in use. Please <a href="/signin" class="link-button">LOG IN</a>.');
+        return;
+      }
 
+      // If email does not exist, insert new user
+      const { data: userDataFetch, error: errorDataFetch } = await supabase
+        .from("userData")
+        .select(); // Fetching user data to determine new ID
+
+      console.log(userDataFetch, "userData");
+      if (errorDataFetch) {
+        console.error("Error fetching user data:", errorDataFetch);
+        return { data: null, error: errorDataFetch };
+      }
+
+      let userDataId = userDataFetch?.slice(-1)[0]?.id + 1 ?? 0;
+      if (!userDataId) {
+        userDataId = 0;
+      }
+
+      // Insert the new user with the email
+      const { data: emailData, error: errorData } = await supabase
+        .from("userData")
+        .upsert({ email: email, id: userDataId });
+
+      if (errorData) {
+        console.error("Error inserting user data:", errorData);
+        return { data: null, error: errorData };
+      }
+
+      console.log("Inserted user with ID:", userDataId);
+      navigate('/onboarding');
     } catch (error) {
-      setErrorMessage(error.message);
+      setErrorMessage(error.message.includes('Invalid login credentials') 
+        ? 'Invalid email' 
+        : 'Sign-in failed. Please try again.');
     }
   };
 
@@ -65,17 +100,9 @@ function SignUp() {
             />
           </div>
 
-          <div style={{ display: "flex", width: "100%", textAlign: "left", justifyContent: "center", padding: "10px" }}>
-            <h2 style={{ width: "20%" }}>Password</h2>
-            <TextInput
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Create a password"
-            />
-          </div>
-
-          {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+          {errorMessage && (
+        <div  style={{ color: "red" }} className="error-message" dangerouslySetInnerHTML={{ __html: errorMessage }} />
+      )}
           {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
 
           <button type="submit">Sign Up</button>

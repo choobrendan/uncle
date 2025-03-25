@@ -20,61 +20,46 @@ function SignIn() {
 
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true); // Added loading state
 
-  // Check if user is already authenticated
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          navigate('/'); // Redirect if user is already logged in
-        }
-      } catch (error) {
-        console.error('Auth check error:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, [navigate]);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      // Check if the email exists in the database
+      const { data: existingUser, error: fetchError } = await supabase
+        .from("userData")
+        .select()
+        .eq('email', email); // Check if email exists
 
-      if (error) throw error;
+      if (fetchError) {
+        console.error("Error fetching user data:", fetchError);
+        setErrorMessage('An error occurred while checking the email. Please try again.');
+        return;
+      }
 
-      console.log('Signed in:', data.user);
-      setPassword('');
-      navigate('/');
-      
+      // If no user found with this email, show an error and navigate to sign-up page
+      if (existingUser.length === 0) {
+        setErrorMessage('Email not found. Please <a href="/signup" class="link-button">SIGN UP</a>.');
+        return;
+      }
+
+      // If the email exists, proceed with the sign-in logic (e.g., set the user session)
+      // You can handle this based on your sign-in requirements (e.g., password check)
+
+      console.log("User found, proceed with sign-in logic");
+
+      // Add sign-in logic here (e.g., validating password, redirecting to dashboard, etc.)
+      // This might involve another API call or client-side logic.
+
     } catch (error) {
-      setErrorMessage(error.message.includes('Invalid login credentials') 
-        ? 'Invalid email or password' 
-        : 'Sign-in failed. Please try again.');
+      setErrorMessage('Sign-in failed. Please try again.');
+      console.error('Sign-in error:', error);
     }
   };
-
-  if (isLoading) {
-    return <div className="signInPage">Loading...</div>; // Loading state
-  }
-const check = async () => {
-  const { data: { users }, error } = await supabase.auth.admin.listUsers()
-  console.log(users)
-}
-check();
-
   return (
     <div className="signInPage">
       <div className="signInCard">
@@ -107,27 +92,10 @@ check();
             />
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-              textAlign: "left",
-              justifyContent: "center",
-              padding: "10px",
-            }}
-          >
-            <h2 style={{ width: "20%" }}>Password</h2>
+          {errorMessage && (
+        <div  style={{ color: "red" }} className="error-message" dangerouslySetInnerHTML={{ __html: errorMessage }} />
+      )}
 
-            <TextInput
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-
-          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
           <button
             type="submit"
