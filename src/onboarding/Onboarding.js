@@ -300,53 +300,7 @@ useEffect(() => {
 
   return (
     <div className="app-container">
-      <div className="data-panel">
-        <h3>Real-time Interaction Data</h3>
-        <div className="data-entry">
-          <div>
-            Time:{" "}
-            {latestData.timeseries[latestData.timeseries.length - 1]?.time}
-          </div>
-          <div>
-            Position X:{" "}
-            {latestData.timeseries[latestData.timeseries.length - 1]?.positionX}
-          </div>
-          <div>
-            Position Y:{" "}
-            {latestData.timeseries[latestData.timeseries.length - 1]?.positionY}
-          </div>
-          <div>
-            Hover Type:{" "}
-            {latestData.timeseries[latestData.timeseries.length - 1]?.hoverType}
-          </div>
-          <div>
-            Mouse Down:{" "}
-            {latestData.timeseries[latestData.timeseries.length - 1]
-              ?.isMouseDown
-              ? "Yes"
-              : "No"}
-          </div>
-          <div>
-            Eye X:{" "}
-            {latestData.timeseries[latestData.timeseries.length - 1]?.eyeX}
-          </div>
-          <div>
-            Eye Y:{" "}
-            {latestData.timeseries[latestData.timeseries.length - 1]?.eyeY}
-          </div>
-          <div>
-            Scroll Direction:{" "}
-            {
-              latestData.timeseries[latestData.timeseries.length - 1]
-                ?.scrollDirection
-            }
-          </div>
-        </div>
 
-        <button onClick={overwriteTable} className="download-button">
-          Download Data
-        </button>
-      </div>
       {nextGame === 0 && <Basketball setNextGame={setNextGame} />}
       {nextGame === 1 && <CommunityCenter setNextGame={setNextGame} />}
       {nextGame === 2 && (

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation  } from 'react-router-dom';
 import Header from './components/Header';
 import Background from './components/Background';
 
 function App() {
+  const location = useLocation();
   const [selectionIndex, setSelectionIndex] = useState(-1);
   const [textSizeModifier, setTextSizeModifier] = useState(1);
   const navigate = useNavigate();
@@ -37,15 +38,16 @@ function App() {
 
   return (
     <React.StrictMode>
-      <Header
+      {location.pathname!=="/onboarding" && (<Header
         setBrightnessIndex={setBrightnessIndex}
         brightnessIndex={brightnessIndex}
-      />
-      <Background
+      />)}
+       {location.pathname!=="/onboarding" && ( <Background
         showRender={false}
         setBrightnessIndex={setBrightnessIndex}
         brightnessIndex={brightnessIndex}
-      />
+      />)}
+      
       <div class="body" >
       <Outlet context={{
         selectionIndex,
