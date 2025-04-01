@@ -1,0 +1,126 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f4f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+.phone-frame>p{
+    color: black;
+}
+  /* Phone frame */
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    max-height: 90vh;
+    background-color: white;
+    border-radius: 24px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  /* Status bar */
+  .status-bar {
+    background-color: black;
+    color: white;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+  }
+  
+  /* Header */
+  .phone-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Main content area */
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 16px;
+  }
+  
+  /* Post styles */
+  .post {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+  }
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+  }
+  .post-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+  }
+  .post-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+  }
+  
+  /* Profile section */
+  .profile-header {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .profile-info {
+    display: flex;
+    align-items: center;
+  }
+  .profile-stats {
+    display: flex;
+    justify-content: space-around;
+    flex: 1;
+    text-align: center;
+  }
+  
+  /* Navigation */
+  .bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid #e5e7eb;
+    background-color: white;
+  }
+  .bottom-nav button {
+    background: none;
+    border: none;
+    font-size: 20px;
+  }
+  
+  /* Search bar */
+  .search-input {
+    width: 100%;
+    background-color: #f3f4f6;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    outline: none;
+  }
+  
+  /* Highlight effect */
+  .highlight {
+    box-shadow: 0 0 0 4px #3897f0;
+    animation: pulse 1.5s infinite;
+    position: relative;
+    z-index: 10;
+  }
+  
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(56, 151, 240, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(56, 151, 240, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(56, 151, 240, 0); }
+  }
