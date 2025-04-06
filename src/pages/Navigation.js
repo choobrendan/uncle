@@ -1,7 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-
+import VoiceButton from '../components/VoiceButton';
+import { useOutletContext } from 'react-router-dom';
 // Main App Component
-const Navigation = () => {
+
+function Navigation  ()  {
+  const {
+    selectionIndex,
+    setSelectionIndex,
+
+  } = useOutletContext();
   const [currentPage, setCurrentPage] = useState('home');
   const [highlightedElement, setHighlightedElement] = useState(null);
   const [userInput, setUserInput] = useState('');
@@ -148,6 +155,7 @@ const Navigation = () => {
   };
   
   return (
+    <div className="app-body" style={styles.appBody}>
     <div className="app-container" style={styles.appContainer}>
       {/* Main Content Area */}
       <div className="content-area" style={styles.contentArea}>
@@ -256,6 +264,8 @@ const Navigation = () => {
           </button>
         </form>
       </div>
+    </div>
+    <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
     </div>
   );
 };
@@ -595,11 +605,16 @@ const ActivityPage = () => {
 
 // Styles object for the SocialMediaApp component
 const styles = {
-    // App Container
+    appBody:{
+      height:"100vh",
+      display: 'flex',
+      flexWrap: "wrap",
+      alignContent: "center",
+    },
     appContainer: {
       fontFamily: 'Helvetica, Arial, sans-serif',
-      maxWidth: '414px',  // iPhone Plus size
-      height: '100vh',
+      maxWidth: '414px',  
+      height: '80vh',
       margin: '0 auto',
       display: 'flex',
       flexDirection: 'column',
@@ -618,8 +633,9 @@ const styles = {
   
     // Navigation Bar
     navigationBar: {
-      position: 'fixed',
-      bottom: 0,
+      position: "absolute",
+      bottom: "-2px",
+      right: "2px",
       width: '100%',
       maxWidth: '414px',  // Match container
       height: '50px',
@@ -654,8 +670,9 @@ const styles = {
   
     // Command Input Container
     commandInputContainer: {
-      position: 'fixed',
-      top: '0',
+      position: "absolute",
+      top: "2px",
+      right: "2px",
       width: '100%',
       maxWidth: '414px',
       padding: '10px',
@@ -690,9 +707,9 @@ const styles = {
   
     // Highlighted Element
     highlightedElement: {
-      boxShadow: '0 0 0 2px #0095f6',
+      boxShadow: '0 0 0 2pxrgb(246, 0, 0)',
       animation: 'pulse 1.5s infinite',
-      backgroundColor: 'rgba(0, 149, 246, 0.1)',
+      backgroundColor: 'rgba(246, 0, 0, 0.7)',
     },
   
     // Home Page
