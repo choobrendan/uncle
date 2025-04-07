@@ -15,7 +15,7 @@ function Navigation  ()  {
   const [posts, setPosts] = useState(mockPosts);
   const [user, setUser] = useState(mockUser);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
-  
+  const [data,setData]=useState([])
   // Refs for elements that need to be highlighted
   const homeButtonRef = useRef(null);
   const searchButtonRef = useRef(null);
@@ -33,76 +33,93 @@ function Navigation  ()  {
   
   // Function to process user commands
   const processCommand = (command) => {
-    const commandLower = command.toLowerCase();
+    console.log(command);
     
-    // Reset highlight
-    setHighlightedElement(null);
+    fetch('http://localhost:8000/send-message-navigation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: command }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data[0].id);
+        setData(data);
+  
+        // Reset highlight
+        setHighlightedElement(null);
+  
+        // Navigation based on API response
+        if (data[0].id === 1) {
+          setCurrentPage('home');
+          setHighlightedElement('home');
+          scrollToRef(homeButtonRef);
+        } 
+        else if (data[0].id === 2) {
+          setCurrentPage('search');
+          setHighlightedElement('search');
+          scrollToRef(searchButtonRef);
+        } 
+        else if (data[0].id === 3) {
+          setCurrentPage('profile');
+          setHighlightedElement('profile');
+          scrollToRef(profileButtonRef);
+        } 
+        else if (data[0].id === 4) {
+          setCurrentPage('activity');
+          setHighlightedElement('activity');
+          scrollToRef(activityButtonRef);
+        } 
+        
+        // Action commands
+        else if (data[0].id === 5) {
+          setHighlightedElement('create');
+          scrollToRef(createPostButtonRef);
+          setTimeout(() => setShowCreatePostModal(true), 1000);
+        } 
+        else if (data[0].id === 6) {
+          setHighlightedElement('story');
+          scrollToRef(storyRef);
+        } 
+        else if (data[0].id === 7) {
+          setHighlightedElement('like');
+          scrollToRef(likeButtonRef);
+        } 
+        else if (data[0].id === 8) {
+          setHighlightedElement('comment');
+          scrollToRef(commentButtonRef);
+        } 
+        else if (data[0].id === 9) {
+          setHighlightedElement('share');
+          scrollToRef(shareButtonRef);
+        } 
+        else if (data[0].id === 10) {
+          console.log("okok");
+          setHighlightedElement('save');
+          scrollToRef(saveButtonRef);
+        } 
+        else if (data[0].id === 11) {
+          setHighlightedElement('follow');
+          scrollToRef(followButtonRef);
+        } 
+        else if (data[0].id === 12) {
+          setHighlightedElement('message');
+          scrollToRef(messageButtonRef);
+        } 
+        else if (data[0].id === 13) {
+          setHighlightedElement('settings');
+          scrollToRef(settingsButtonRef);
+        } 
+        else {
+          // No recognized command
+          console.log('Command not recognized:', command);
+        }
+      })
+      .catch((error) => console.error('Error sending message:', error));
     
-    // Navigation commands
-    if (commandLower.includes('go to home') || commandLower.includes('show home')) {
-      setCurrentPage('home');
-      setHighlightedElement('home');
-      scrollToRef(homeButtonRef);
-    } 
-    else if (commandLower.includes('go to search') || commandLower.includes('how to search')) {
-      setCurrentPage('search');
-      setHighlightedElement('search');
-      scrollToRef(searchButtonRef);
-    }
-    else if (commandLower.includes('go to profile') || commandLower.includes('show profile') || commandLower.includes('view profile')) {
-      setCurrentPage('profile');
-      setHighlightedElement('profile');
-      scrollToRef(profileButtonRef);
-    }
-    else if (commandLower.includes('go to activity') || commandLower.includes('show notifications')) {
-      setCurrentPage('activity');
-      setHighlightedElement('activity');
-      scrollToRef(activityButtonRef);
-    }
-    
-    // Action commands
-    else if (commandLower.includes('create post') || commandLower.includes('new post') || commandLower.includes('post a picture')) {
-      setHighlightedElement('create');
-      scrollToRef(createPostButtonRef);
-      setTimeout(() => setShowCreatePostModal(true), 1000);
-    }
-    else if (commandLower.includes('view story') || commandLower.includes('watch story')) {
-      setHighlightedElement('story');
-      scrollToRef(storyRef);
-    }
-    else if (commandLower.includes('like') || commandLower.includes('how to like')) {
-      setHighlightedElement('like');
-      scrollToRef(likeButtonRef);
-    }
-    else if (commandLower.includes('comment') || commandLower.includes('how to comment')) {
-      setHighlightedElement('comment');
-      scrollToRef(commentButtonRef);
-    }
-    else if (commandLower.includes('share') || commandLower.includes('how to share')) {
-      setHighlightedElement('share');
-      scrollToRef(shareButtonRef);
-    }
-    else if (commandLower.includes('save') || commandLower.includes('bookmark')) {
-      setHighlightedElement('save');
-      scrollToRef(saveButtonRef);
-    }
-    else if (commandLower.includes('follow') || commandLower.includes('how to follow')) {
-      setHighlightedElement('follow');
-      scrollToRef(followButtonRef);
-    }
-    else if (commandLower.includes('message') || commandLower.includes('send message')) {
-      setHighlightedElement('message');
-      scrollToRef(messageButtonRef);
-    }
-    else if (commandLower.includes('settings') || commandLower.includes('change settings')) {
-      setHighlightedElement('settings');
-      scrollToRef(settingsButtonRef);
-    }
-    else {
-      // No recognized command
-      console.log('Command not recognized:', command);
-    }
+    // This line will be executed immediately, before the fetch is complete
+    console.log(command);
   };
+  
   
   // Helper function to scroll to a ref
   const scrollToRef = (ref) => {
@@ -613,8 +630,10 @@ const styles = {
     },
     appContainer: {
       fontFamily: 'Helvetica, Arial, sans-serif',
-      maxWidth: '414px',  
+      maxWidth: '1414px',  
       height: '80vh',
+      paddingLeft:"20px",
+      paddingRight:"20px",
       margin: '0 auto',
       display: 'flex',
       flexDirection: 'column',
@@ -624,11 +643,12 @@ const styles = {
       overflowY: 'hidden',
     },
   
-    // Content Area
+    
     contentArea: {
       flex: 1,
       overflowY: 'auto',
-      paddingBottom: '50px',  // Space for navigation bar
+      paddingBottom: '50px',  
+      width:"600px",
     },
   
     // Navigation Bar
@@ -637,7 +657,7 @@ const styles = {
       bottom: "-2px",
       right: "2px",
       width: '100%',
-      maxWidth: '414px',  // Match container
+      maxWidth: '1414px',  // Match container
       height: '50px',
       backgroundColor: 'white',
       display: 'flex',
@@ -674,7 +694,7 @@ const styles = {
       top: "2px",
       right: "2px",
       width: '100%',
-      maxWidth: '414px',
+      maxWidth: '1414px',
       padding: '10px',
       backgroundColor: '#f0f0f0',
       zIndex: 100,
@@ -714,7 +734,10 @@ const styles = {
   
     // Home Page
     homePage: {
-      paddingTop: '60px',  // Space for command input
+      paddingTop: '60px',
+      paddingLeft:"60px",
+      paddingRight:"60px",
+      width:"600px",  // Space for command input
       backgroundColor: 'white',
     },
   
@@ -803,7 +826,7 @@ const styles = {
   
     postImage: {
       width: '100%',
-      height: '414px',  // Square for Instagram-like feel
+      height: '500px',  // Square for Instagram-like feel
       backgroundColor: '#fafafa',
     },
   
@@ -850,7 +873,8 @@ const styles = {
   
     // Search Page
     searchPage: {
-      paddingTop: '60px',  // Space for command input
+      paddingTop: '60px',
+      width:"600px",  // Space for command input
     },
   
     searchHeader: {
@@ -1037,7 +1061,8 @@ const styles = {
   
     // Activity Page
     activityPage: {
-      paddingTop: '60px',  // Space for command input
+      paddingTop: '60px',  
+      width:"600px",
       backgroundColor: 'white',
     },
   

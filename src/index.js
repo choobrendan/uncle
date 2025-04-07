@@ -10,6 +10,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import Onboarding from './onboarding/Onboarding'
 import Navigation from './pages/Navigation';
+import Graph from './pages/Graph';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -19,6 +20,7 @@ root.render(
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="navigation" element={<Navigation />} />
+          <Route path="graph" element={<Graph />} />
           <Route path="signin" element={<SignIn />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="onboarding" element={<Onboarding />} />

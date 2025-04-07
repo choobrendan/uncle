@@ -23,10 +23,23 @@ command=[
     {"id": 5, "name": "Increase brightness"},
     {"id": 6, "name": "Decrease brightness"},
     {"id": 7, "name": "Navigate to home page"},
-    {"id": 8, "name": "Navigate to about page"}
+    {"id": 8, "name": "Navigate to about page"},
+
 ]
 
-
+commandNavigation=     [{ "id": 1, "name": "Navigate to home page" },
+  { "id": 2, "name": "Navigate to search page"},
+  { "id": 3, "name": "Navigate to profile page" },
+  { "id": 4, "name": "Navigate to activity page"},
+  { "id": 5, "name": "Create a post" },
+  { "id": 6, "name": "View a story"},
+  { "id": 7, "name": "Like a post"},
+  { "id": 8, "name": "Comment on a post" },
+  { "id": 9, "name": "Share a post"},
+  { "id": 10, "name": "Save a post"},
+  { "id": 11, "name": "Follow a user"},
+  { "id": 12, "name": "Send a message" },
+  { "id": 13, "name": "Open settings" },]
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
@@ -45,6 +58,29 @@ async def send_message(message: Message):
     similarity_arr = []
 
     for sent in command:
+        print(sent)
+        
+        # Calculate similarity score
+        similarity_score = 1 - distance.cosine(test_vec, model.encode([sent["name"]])[0])
+        
+        # Convert the numpy.float32 to Python float
+        similarity_score = float(similarity_score)
+        
+        if similarity_score > 0.01:
+            similarity_arr.append({"score": similarity_score, "text": sent["name"], "id": sent["id"]})
+        
+    print(similarity_arr)
+    similarity_arr = sorted(similarity_arr, key=lambda x: x["score"], reverse=True)
+    print(similarity_arr)
+    return similarity_arr
+
+@app.post("/send-message-navigation")
+async def send_message(message: Message):
+# print(message.message)
+    test_vec = model.encode([message.message])[0]
+    similarity_arr = []
+
+    for sent in commandNavigation:
         print(sent)
         
         # Calculate similarity score
