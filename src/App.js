@@ -9,7 +9,7 @@ function App() {
   const [textSizeModifier, setTextSizeModifier] = useState(1);
   const navigate = useNavigate();
   const [brightnessIndex, setBrightnessIndex] = useState(1);
-
+  const [simplify, setSimplify]=useState(false)
   useEffect(() => {
     switch (selectionIndex) {
       case 1:
@@ -18,6 +18,9 @@ function App() {
       case 2:
         setTextSizeModifier(prev => prev / 1.25);
         break;
+      case 3:
+        setSimplify(!simplify)
+        break;    
       case 5:
         setBrightnessIndex(prev => prev * 1.1);
         break;
@@ -46,6 +49,7 @@ function App() {
         showRender={false}
         setBrightnessIndex={setBrightnessIndex}
         brightnessIndex={brightnessIndex}
+        simplify={simplify}
       />)}
       
       <div class="body" >
@@ -54,7 +58,8 @@ function App() {
         setSelectionIndex,
         textSizeModifier,
         brightnessIndex,
-        setBrightnessIndex
+        setBrightnessIndex,
+        simplify
       }} />
       </div>
     </React.StrictMode>

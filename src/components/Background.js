@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FaceRender from '../components/FaceRender';
 import HandRender from '../components/HandRender';
 import "./Background.css"
-const Background = ({ showRender,brightnessIndex }) => {
+const Background = ({ showRender,brightnessIndex,simplify }) => {
   const [mouseX, setMouseX] = useState('');
   const [mouseY, setMouseY] = useState('');
   const [gazeX, setGazeX] = useState(0);
@@ -23,9 +23,22 @@ const Background = ({ showRender,brightnessIndex }) => {
     };
   }, []);
 
+
+  const bgStyles = {
+    height: '100vh',
+    position: 'fixed',
+    top: 0,
+    width: '100vw',
+    zIndex: -999,
+    backgroundColor: !simplify ? '#000000' : '#231f01',
+    filter: `brightness(${brightnessIndex})`, // dynamically apply brightness
+  };
+
+
   return (
-    <div className="bg" style={{filter:`brightness(${1*brightnessIndex}`}}>
-      <div className="coordinates">
+    <div style={bgStyles}>
+
+      {simplify && (   <div>   <div className="coordinates">
         <div className="mouse-coordinates">
           <div className="mouse-box">
             <p>Mouse X: {mouseX}</p>
@@ -37,9 +50,7 @@ const Background = ({ showRender,brightnessIndex }) => {
         <div className="head-coordinates">
           {/* You can add additional gaze coordinates if required */}
         </div>
-      </div>
-
-      <div className="body">
+      </div>      <div className="body">
         <div className="overlay o-top">
           <div className="grid top">
             <div className="grid-fade"></div>
@@ -73,6 +84,10 @@ const Background = ({ showRender,brightnessIndex }) => {
         {showRender && <HandRender />}
         {showRender && <FaceRender X={gazeX} Y={gazeY} />}
       </div>
+    </div>)}
+
+
+
     </div>
   );
 };

@@ -18,8 +18,8 @@ app.add_middleware(
 command=[
     {"id": 1, "name": "Increase font size"},
     {"id": 2, "name": "Decrease font size"},
-    {"id": 3, "name": "Increase container size"},
-    {"id": 4, "name": "Decrease container size"},
+    {"id": 3, "name": "Simplify webpage"},
+    {"id": 4, "name": "Change font"},
     {"id": 5, "name": "Increase brightness"},
     {"id": 6, "name": "Decrease brightness"},
     {"id": 7, "name": "Navigate to home page"},
@@ -27,7 +27,8 @@ command=[
 
 ]
 
-commandNavigation=     [{ "id": 1, "name": "Navigate to home page" },
+commandNavigation=     
+[{ "id": 1, "name": "Navigate to home page" },
   { "id": 2, "name": "Navigate to search page"},
   { "id": 3, "name": "Navigate to profile page" },
   { "id": 4, "name": "Navigate to activity page"},

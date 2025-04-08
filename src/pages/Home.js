@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import "./Home.css"
+import "./Home.css";
 // Components
 import Background from '../components/Background';
 import VoiceButton from '../components/VoiceButton';
@@ -13,7 +13,8 @@ function Home() {
     setSelectionIndex,
     textSizeModifier,
     brightnessIndex,
-    setBrightnessIndex
+    setBrightnessIndex,
+    simplify
   } = useOutletContext();
 
   // State variables
@@ -32,13 +33,10 @@ function Home() {
     letterSpacing: '',
     fontFamily: ''
   });
-
+console.log(simplify)
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [message, setMessage] = useState('');
   const [showRender, setShowRender] = useState(true);
-
-
-
 
   const typingInterval = useRef(null);
   const deletingInterval = useRef(null);
@@ -47,15 +45,63 @@ function Home() {
   const command = [
     "Increase font size",
     "Decrease font size",
-    "Increase container size",
-    "Decrease container size",
+    "simplify webpage",
+    "Change font",
     "Increase brightness",
     "Decrease brightness",
     "Navigate to home page",
     "Navigate to about page",
   ];
 
-
+  // Simplified styles
+  const simplifiedStyles = {
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100vh',
+      backgroundColor: '#fff',
+      color: '#333',
+      fontFamily: 'Arial, sans-serif',
+      padding: '20px',
+      textAlign: 'center',
+      overflow: 'auto'
+    },
+    content: {
+      maxWidth: '800px',
+      width: '100%',
+    },
+    heading: {
+      fontSize: `${24 * textSizeModifier}px`,
+      fontWeight: 'bold',
+      marginBottom: '20px',
+      color: '#333'
+    },
+    subheading: {
+      fontSize: `${20 * textSizeModifier}px`,
+      marginBottom: '10px',
+      color: '#333'
+    },
+    section: {
+      marginBottom: '30px',
+      padding: '20px',
+      backgroundColor: '#f5f5f5',
+      borderRadius: '8px',
+      boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+    },
+    textBox: {
+      marginTop: '20px'
+    },
+    cursor: {
+      display: 'inline-block',
+      verticalAlign: 'middle',
+      width: '2px',
+      height: '20px',
+      backgroundColor: '#333',
+      animation: 'blink 0.75s step-end infinite'
+    }
+  };
 
   // Text Style Computation
   const textStyle = {
@@ -153,11 +199,6 @@ function Home() {
     }
   };
 
-
-
-  
-  
-
   const sendText = () => {
     fetch('http://localhost:8000/send-message', {
       method: 'POST',
@@ -180,13 +221,52 @@ function Home() {
       });
   };
 
+  // Render simplified version
+
+
+  // Render original version
   return (
-    <div  style={{  alignItems: 'center', justifyContent: 'center', }}onMouseMove={handleMouseMove}>
+    <div style={{ alignItems: 'center', justifyContent: 'center' }} onMouseMove={handleMouseMove}>
+{simplify &&(
+      <div style={simplifiedStyles.container} onMouseMove={handleMouseMove}>
+        <div style={simplifiedStyles.content}>
+          <div style={simplifiedStyles.section}>
+            <h1 style={simplifiedStyles.heading}>How would you like your website</h1>
+            <div>
+              <span style={simplifiedStyles.subheading}>{displayedText}</span>
+              <span 
+                style={{
+                  ...simplifiedStyles.cursor,
+                  visibility: cursorVisible ? 'visible' : 'hidden'
+                }}
+              ></span>
+            </div>
+          </div>
 
+          <div style={simplifiedStyles.section}>
+            <h2 style={simplifiedStyles.heading}>Website Customization</h2>
+            <p style={simplifiedStyles.subheading}>
+              Our website offers various customization options to make your browsing experience better.
+              You can adjust font size, brightness, and more to suit your needs.
+            </p>
+          </div>
 
-      <div className="content" 
-      //style={{filter:`brightness(${1*brightnessIndex}`}}
-      >
+          <div style={simplifiedStyles.section}>
+            <h2 style={simplifiedStyles.heading}>How would you want to modify this website?</h2>
+            <p style={simplifiedStyles.subheading}>Try it out now!</p>
+            <div style={simplifiedStyles.textBox}>
+              <TextBox 
+                selectionIndex={selectionIndex} 
+                setSelectionIndex={setSelectionIndex} 
+                isApiCallDisabled={true}
+              />
+            </div>
+          </div>
+        </div>
+        <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
+      </div>
+    )}
+    {!simplify &&(<div className="content">
         <div className="content-1">
           <div className="how-would-you">
             <p style={{ fontFamily: 'Oxanium', fontWeight: 200, fontSize: `${36 * textSizeModifier}px` }}>
@@ -221,23 +301,23 @@ function Home() {
 
         <div className="content-1">
           <div className="how-would-you">
-            <p style={{ fontFamily: 'Oxanium', fontWeight: 200, fontSize:`${36 * textSizeModifier}px` }}>
+            <p style={{ fontFamily: 'Oxanium', fontWeight: 200, fontSize: `${36 * textSizeModifier}px` }}>
               How would you want to modify this website?
             </p>
           </div>
           <div style={{ width: '360px' }}></div>
           <div className="customised">
-            <p style={{ fontFamily: 'Oxanium', fontWeight: 200, fontSize: `${36 * textSizeModifier}px`}}>
+            <p style={{ fontFamily: 'Oxanium', fontWeight: 200, fontSize: `${36 * textSizeModifier}px` }}>
               Try it out now!
             </p>
             <TextBox selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex} isApiCallDisabled={true}/>
           </div>
         </div>
-      </div>
+      </div>)}
+      
       <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
-
     </div>
   );
-};
+}
 
 export default Home;
