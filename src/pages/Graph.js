@@ -11,7 +11,8 @@ function Graph() {
     setSelectionIndex,
     textSizeModifier,
     brightnessIndex,
-    setBrightnessIndex
+    setBrightnessIndex,
+    simplify
   } = useOutletContext();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -273,15 +274,6 @@ function Graph() {
         marginBottom: "15px",
         backgroundColor: "#f9f9f9"
       }}>
-        <div style={{display: "flex", justifyContent: "space-between", marginBottom: "10px"}}>
-          <h3 style={{margin: 0}}>{colName} ({info.type})</h3>
-          <button 
-            onClick={() => removeColumnFilter(colName)}
-            style={{background: "#ff6b6b", color: "white", border: "none", borderRadius: "4px", padding: "4px 8px"}}
-          >
-            Remove
-          </button>
-        </div>
         
         {renderFilterControlsByType(colName, info)}
       </div>
@@ -299,7 +291,8 @@ function Graph() {
         };
         
         return (
-          <div className="filter-controls" style={{display:"flex", flexDirection:"row", alignItems:"center", marginTop: "10px"}}>
+          <div className="filter-controls" style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+            <span style={{width:"107px", textAlign:"center",color:"black"}}>{colName}</span>
             <select 
               value={numInput.operation}
               onChange={(e) => handleNumericOperationChange(colName, e.target.value)}
@@ -353,9 +346,9 @@ function Graph() {
             </button>
 
             <button 
-              onClick={() => handleFilterChange(colName, 'number', null)}
+ onClick={() => removeColumnFilter(colName)}
             >
-              Clear
+              Remove
             </button>
 
             {filters[colName] && (
@@ -412,7 +405,7 @@ function Graph() {
         
       default: // string type
         return (
-          <div className="string-filter" style={{display: "flex", alignItems: "center", marginTop: "10px"}}>
+          <div className="string-filter" style={{display: "flex", alignItems: "center"}}>
             <div className="filter-header" style={{marginRight: "10px"}}>
               <input
                 type="checkbox"
@@ -426,9 +419,9 @@ function Graph() {
                     handleFilterChange(colName, 'string', null);
                   }
                 }}
-                style={{marginRight: "5px"}}
+                style={{marginRight: "5px", }}
               />
-              <label htmlFor={`enable-${colName}-filter`}>Enable filter</label>
+              <label  htmlFor={`enable-${colName}-filter`}>Enable filter</label>
             </div>
             
             <select
@@ -459,8 +452,6 @@ function Graph() {
   // Function to render active filters summary
   const renderActiveFilters = () => {
     const activeFilters = Object.entries(filters).filter(([colName, filter]) => filter !== null);
-    
-    if (activeFilters.length === 0) return <div>No active filters</div>;
     
     return (
       <div className="active-filters">
@@ -500,12 +491,12 @@ function Graph() {
     if (filteredData.length === 0) return <div>No data to display</div>;
   
     return (
-      <div className="data-table-container" style={{ overflowX: 'auto', maxHeight: '400px', overflowY: 'auto' }}>
-        <table className="data-table">
+      <div className="data-table-container" style={{ overflowX: 'auto', maxHeight: '250px', overflowY: 'auto',marginBottom:"20px" }}>
+        <table style={{color:!simplify ? "aliceblue":"black"}} className="data-table" >
           <thead style={{ position: 'sticky', top: 0, backgroundColor: '#fff', zIndex: 1 }}>
             <tr>
               {columns.map(col => (
-                <th key={col} onClick={() => handleSort(col)} style={{ cursor: 'pointer' }}>
+                <th  key={col} onClick={() => handleSort(col)} style={{ cursor: 'pointer',color:"black" }}>
                   {col} {sortConfig.key === col ? (sortConfig.direction === 'asc' ? '↑' : '↓') : ''}
                 </th>
               ))}
@@ -524,21 +515,251 @@ function Graph() {
       </div>
     );
   };
+  const simplifiedStyles = {
+    container: {
+      
+      display: 'flex',
+      justifyContent:'center',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '20px',
+      backgroundColor: '#fff',
+      minHeight: '100vh',
+      fontFamily: 'Arial, sans-serif'
+    },
+    heading: {
+      fontSize: `${24 * textSizeModifier}px`,
+      color: '#333',
+      marginBottom: '15px'
+    },
+    fileUploader: {
+      width: '100%',
+      maxWidth: '800px',
+      padding: '20px',
+      backgroundColor: '#f8f8f8',
+      borderRadius: '8px',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+      marginBottom: '20px',
+      textAlign: 'center'
+    },
+    fileInput: {
+      marginBottom: '15px',
+      width: '100%',
+      padding: '10px',
+      border: '1px solid #ddd',
+      borderRadius: '4px'
+    },
+    loadingMessage: {
+      color: '#666',
+      margin: '10px 0'
+    },
+    errorMessage: {
+      color: '#d32f2f',
+      fontWeight: 'bold',
+      margin: '10px 0'
+    },
+    dataExplorer: {
+      width: '100%',
+      maxWidth: '1000px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '20px'
+    },
+    filtersContainer: {
+      backgroundColor: '#f8f8f8',
+      paddingLeft: '20px',
+      paddingRight: '20px',
+      borderRadius: '8px',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+    },
+    filterSelectorRow: {
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '20px',
+      padding: '10px',
+      border: '1px dashed #aaa',
+      borderRadius: '8px'
+    },
+    select: {
+      marginRight: '10px',
+      minWidth: '200px',
+      padding: '8px',
+      border: '1px solid #ddd',
+      borderRadius: '4px'
+    },
+    button: {
+      backgroundColor: (props) => props.disabled ? '#ccc' : '#4CAF50',
+      color: 'white',
+      padding: '8px 15px',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer'
+    },
+    activeFiltersMessage: {
+      fontStyle: 'italic',
+      marginBottom: '15px',
+      color: '#666'
+    },
+    filterDivider: {
+      marginTop: '20px',
+
+    },
+    dataPreview: {
+      backgroundColor: '#f8f8f8',
+      padding: '20px',
+      borderRadius: '8px',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+      width: '100%'
+    },
+    dataPreviewHeading: {
+      fontSize: `${20 * textSizeModifier}px`,
+      color: '#333',
+      marginBottom: '15px'
+    },
+    table: {
+      width: '100%',
+      borderCollapse: 'collapse',
+      backgroundColor: '#fff',
+      tableLayout: "auto",
+      color: 'black',
+
+    },
+    tableHeader: {
+      backgroundColor: '#f1f1f1',
+      padding: '10px',
+      textAlign: 'left',
+      borderBottom: '2px solid #ddd'
+    },
+    tableCell: {
+      padding: '8px',
+      borderBottom: '1px solid #ddd'
+    }
+  };
+
+  if (simplify) {
+    return (
+      <div style={simplifiedStyles.container}>
+                {isLoading && csvData.length === 0 && (    
+        <div style={simplifiedStyles.fileUploader}>
+          <h2 style={simplifiedStyles.heading}>Upload CSV File</h2>
+          <input 
+            type="file" 
+            accept=".csv" 
+            onChange={handleFileUpload} 
+            style={simplifiedStyles.fileInput}
+          />
+          {isLoading && file && (
+            <div style={simplifiedStyles.loadingMessage}>Loading and analyzing data...</div>
+          )}
+          {errorMessage && (
+            <div style={simplifiedStyles.errorMessage}>{errorMessage}</div>
+          )}
+        </div>
+                )}
+        {!isLoading && csvData.length > 0 && (
+          <div style={simplifiedStyles.dataExplorer}>
+            <div style={simplifiedStyles.filtersContainer}>
+              <h2 style={simplifiedStyles.heading}>Filters</h2>
+              
+              <div style={simplifiedStyles.filterSelectorRow}>
+                <select 
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      addColumnFilter(e.target.value);
+                      e.target.value = ""; // Reset after selection
+                    }
+                  }}
+                  style={simplifiedStyles.select}
+                >
+                  <option value="">-- Select column to add filter --</option>
+                  {allColumns.map(colName => (
+                    <option key={colName} value={colName}>
+                      {colName} ({columnInfo[colName]?.type})
+                    </option>
+                  ))}
+                </select>
+                
+                <button 
+                  onClick={() => {
+                    const select = document.querySelector('select');
+                    if (select.value) {
+                      addColumnFilter(select.value);
+                      select.value = ""; // Reset after selection
+                    }
+                  }}
+                  disabled={allColumns.length === 0 || allColumns.length === activeFilterColumns.length}
+                  style={{
+                    backgroundColor: (allColumns.length === 0 || allColumns.length === activeFilterColumns.length) ? '#ccc' : '#4CAF50',
+                    color: 'white',
+                    padding: '8px 15px',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Add Filter
+                </button>
+              </div>
+              
+              <div style={{height:"120px",overflowX:"auto"}}>
+                {activeFilterColumns.length === 0 ? (
+                  <div style={simplifiedStyles.activeFiltersMessage}>
+                    No column filters added. Select columns to create filters.
+                  </div>
+                ) : (
+                  activeFilterColumns.map(colName => renderColumnFilter(colName))
+                )}
+              </div>
+              
+              {activeFilterColumns.length > 0 && (
+                <div style={simplifiedStyles.filterDivider}>
+                  {renderActiveFilters()}
+                </div>
+              )}
+            </div>
+            
+            <div style={simplifiedStyles.dataPreview}>
+              <h2 style={simplifiedStyles.dataPreviewHeading}>
+                Filtered Data ({filteredData.length} rows)
+              </h2>
+              {renderDataTable(true)} {/* Pass a flag to use simplified styling */}
+            </div>
+          </div>
+        )}
+        
+        <VoiceButton
+          setSelectionIndex={setSelectionIndex}
+          selectionIndex={selectionIndex}
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className="body">
+    <div className="body" style={{ filter: `brightness(${1 * brightnessIndex})` }}>
       <div className="graph">
-        <div className="csv-uploader">
-          <h2>Upload CSV File</h2>
-          <input style={{marginBottom: "15px"}} type="file" accept=".csv" onChange={handleFileUpload} />
-          {isLoading && file && <div>Loading and analyzing data...</div>}
-          {errorMessage && <div className="error">{errorMessage}</div>}
-        </div>
+        {isLoading && csvData.length === 0 && (        <div className="csv-uploader">
+          <h2 style={{ fontSize: `${24 * textSizeModifier}px` }}>Upload CSV File</h2>
+          <input 
+            style={{ marginBottom: "15px", fontSize: `${14 * textSizeModifier}px` }} 
+            type="file" 
+            accept=".csv" 
+            onChange={handleFileUpload} 
+          />
+          {isLoading && file && (
+            <div style={{ fontSize: `${16 * textSizeModifier}px` }}>Loading and analyzing data...</div>
+          )}
+          {errorMessage && (
+            <div className="error" style={{ fontSize: `${16 * textSizeModifier}px` }}>{errorMessage}</div>
+          )}
+        </div>)}
+
         
         {!isLoading && csvData.length > 0 && (
           <div className="data-explorer">
-            <div className="filters">
-              <h2>Filters</h2>
+            <div className="filters" style={{width:"750px"}}>
+              <h2 style={{ fontSize: `${24 * textSizeModifier}px` }}>Filters</h2>
               
               {/* Column selector dropdown and add button */}
               <div className="add-column-filter" style={{
@@ -557,14 +778,14 @@ function Graph() {
                       e.target.value = ""; // Reset after selection
                     }
                   }}
-                  style={{marginRight: "10px", minWidth: "200px"}}
+                  style={{ marginRight: "10px", minWidth: "200px", fontSize: `${14 * textSizeModifier}px` }}
                 >
                   <option value="">-- Select column to add filter --</option>
                   {allColumns.map(colName => (
-    <option key={colName} value={colName}>
-        {colName} ({columnInfo[colName]?.type})
-    </option>
-))}
+                    <option key={colName} value={colName}>
+                      {colName} ({columnInfo[colName]?.type})
+                    </option>
+                  ))}
                 </select>
                 
                 <button 
@@ -581,30 +802,36 @@ function Graph() {
                     color: "white",
                     padding: "5px 10px",
                     border: "none",
-                    borderRadius: "4px"
+                    borderRadius: "4px",
+                    fontSize: `${14 * textSizeModifier}px`
                   }}
                 >
                   Add Filter
                 </button>
               </div>
+              
               <div className="active-column-filters">
                 {activeFilterColumns.length === 0 ? (
-                  <div style={{fontStyle: "italic", marginBottom: "15px"}}>No column filters added. Select columns to create filters.</div>
+                  <div style={{ fontStyle: "italic", marginBottom: "15px", fontSize: `${14 * textSizeModifier}px` }}>
+                    No column filters added. Select columns to create filters.
+                  </div>
                 ) : (
                   activeFilterColumns.map(colName => renderColumnFilter(colName))
                 )}
               </div>
               
               {activeFilterColumns.length > 0 && (
-                <div style={{marginTop: "20px", borderTop: "1px solid #ddd", paddingTop: "10px"}}>
+                <div style={{ marginTop: "20px", borderTop: "1px solid #ddd", paddingTop: "10px" }}>
                   {renderActiveFilters()}
                 </div>
               )}
             </div>
             
-            <div className="data-preview">
-              <h2>Filtered Data ({filteredData.length} rows)</h2>
-              {renderDataTable()}
+            <div className="data-preview" style={{width:"750px"}}>
+              <h2 style={{ fontSize: `${24 * textSizeModifier}px` }}>
+                Filtered Data ({filteredData.length} rows)
+              </h2>
+              {renderDataTable(false)} {/* Pass flag to use original styling */}
             </div>
           </div>
         )}

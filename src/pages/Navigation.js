@@ -7,7 +7,7 @@ function Navigation  ()  {
   const {
     selectionIndex,
     setSelectionIndex,
-
+  simplify,
   } = useOutletContext();
   const [currentPage, setCurrentPage] = useState('home');
   const [highlightedElement, setHighlightedElement] = useState(null);
@@ -172,7 +172,8 @@ function Navigation  ()  {
   };
   
   return (
-    <div className="app-body" style={styles.appBody}>
+<div className="app-body" style={{ ...styles.appBody, backgroundColor: simplify ?  '#ffffff':'inherit'  }}>
+
     <div className="app-container" style={styles.appContainer}>
       {/* Main Content Area */}
       <div className="content-area" style={styles.contentArea}>
@@ -627,6 +628,7 @@ const styles = {
       display: 'flex',
       flexWrap: "wrap",
       alignContent: "center",
+      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.24)",
     },
     appContainer: {
       fontFamily: 'Helvetica, Arial, sans-serif',

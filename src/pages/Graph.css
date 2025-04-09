@@ -2,8 +2,17 @@
   height: 100vh;
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   align-content: center;
   justify-content: center;
+  align-items: center;
+
+}
+.active-column-filters{
+  overflow: auto;
+  max-height: 120px;
+}
+tr{
 
 }
 .data-explorer{
@@ -16,7 +25,7 @@ width:80%;
 min-width: 600px;
   border-radius: 50px;
 
-  background-color:#231f01;
+  background-color:#333229;
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.24);
   transition: height 0.3s, width 0.3s, border-radius 0.3s;
   transition-timing-function: ease;
@@ -45,14 +54,14 @@ min-width: 600px;
     padding: 3px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    width: 80px;
+    width: 54px;
   }
   .input-group input {
     flex: 1;
     padding: 3px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    width: 80px;
+    width: 40px;
   }
   select {
     padding: 5px;
@@ -67,5 +76,7 @@ min-width: 600px;
 
   }
   table{
-    color:aliceblue
+    color:aliceblue;
+    width: 100%;
+    table-layout: auto,
   }

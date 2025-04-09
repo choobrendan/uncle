@@ -9,10 +9,10 @@ function App() {
   const [textSizeModifier, setTextSizeModifier] = useState(1);
   const navigate = useNavigate();
   const [brightnessIndex, setBrightnessIndex] = useState(1);
-  const [simplify, setSimplify]=useState(!true)
+  const [simplify, setSimplify]=useState(true)
   useEffect(() => {
     switch (selectionIndex) {
-      case 1:
+      case 1: 
         setTextSizeModifier(prev => prev * 1.25);
         break;
       case 2:
