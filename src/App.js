@@ -9,7 +9,7 @@ function App() {
   const [textSizeModifier, setTextSizeModifier] = useState(1);
   const navigate = useNavigate();
   const [brightnessIndex, setBrightnessIndex] = useState(1);
-  const [simplify, setSimplify]=useState(false)
+  const [simplify, setSimplify]=useState(!true)
   useEffect(() => {
     switch (selectionIndex) {
       case 1:
@@ -44,6 +44,7 @@ function App() {
       {location.pathname!=="/onboarding" && (<Header
         setBrightnessIndex={setBrightnessIndex}
         brightnessIndex={brightnessIndex}
+        simplify={simplify}
       />)}
        {location.pathname!=="/onboarding" && ( <Background
         showRender={false}

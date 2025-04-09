@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 import VoiceButton from '../components/VoiceButton';
 import TextInput from '../components/TextInput';
-import "./SignIn.css"
+import "./SignIn.css";
 
 const supabaseUrl = "https://hgatxkpmrskbdqigenav.supabase.co";
 const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
@@ -15,8 +15,10 @@ function SignUp() {
     setSelectionIndex,
     textSizeModifier,
     brightnessIndex,
-    setBrightnessIndex
+    setBrightnessIndex,
+    simplify
   } = useOutletContext();
+  
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,7 +43,7 @@ function SignUp() {
 
       // If user with this email exists, handle it accordingly
       if (existingUser.length > 0) {
-        setErrorMessage('Email is already in use. Please <a href="/signin" class="link-button">LOG IN</a>.');
+        setErrorMessage('Email is already in use. Please LOG IN.');
         return;
       }
 
@@ -76,40 +78,251 @@ function SignUp() {
     } catch (error) {
       setErrorMessage(error.message.includes('Invalid login credentials') 
         ? 'Invalid email' 
-        : 'Sign-in failed. Please try again.');
+        : 'Sign-up failed. Please try again.');
     }
   };
 
+  // Simplified styles
+  const simplifiedStyles = {
+    container: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      backgroundColor: '#fff',
+      fontFamily: 'Arial, sans-serif'
+    },
+    card: {
+      width: '400px',
+      padding: '30px',
+      backgroundColor: '#f8f8f8',
+      borderRadius: '8px',
+      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+      textAlign: 'center'
+    },
+    title: {
+      fontSize: `${28 * textSizeModifier}px`,
+      fontWeight: 'bold',
+      color: '#333',
+      marginBottom: '15px'
+    },
+    description: {
+      fontSize: `${16 * textSizeModifier}px`,
+      color: '#555',
+      marginBottom: '30px'
+    },
+    formGroup: {
+      marginBottom: '20px',
+      textAlign: 'left'
+    },
+    label: {
+      display: 'block',
+      fontSize: `${16 * textSizeModifier}px`,
+      fontWeight: 'bold',
+      color: '#333',
+      marginBottom: '8px'
+    },
+    input: {
+      width: '100%',
+      padding: '12px',
+      fontSize: `${16 * textSizeModifier}px`,
+      border: '1px solid #ddd',
+      borderRadius: '4px',
+      backgroundColor: '#fff'
+    },
+    errorMessage: {
+      color: '#d32f2f',
+      fontSize: `${14 * textSizeModifier}px`,
+      marginBottom: '15px',
+      textAlign: 'left',
+      fontWeight: 'bold'
+    },
+    successMessage: {
+      color: '#4caf50',
+      fontSize: `${14 * textSizeModifier}px`,
+      marginBottom: '15px',
+      textAlign: 'left',
+      fontWeight: 'bold'
+    },
+    button: {
+      backgroundColor: '#2196f3',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      padding: '12px 24px',
+      fontSize: `${16 * textSizeModifier}px`,
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      width: '100%',
+      marginBottom: '20px'
+    },
+    linkText: {
+      fontSize: `${14 * textSizeModifier}px`,
+      color: '#555'
+    },
+    link: {
+      color: '#2196f3', 
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      textDecoration: 'none'
+    }
+  };
+
+  // Render simplified version
+  if (simplify) {
+    return (
+      <div style={simplifiedStyles.container}>
+        <div style={simplifiedStyles.card}>
+          <h2 style={simplifiedStyles.title}>Create New Account</h2>
+          <p style={simplifiedStyles.description}>
+            Join our community to save your preferences and settings!
+          </p>
+          
+          <form onSubmit={handleSignUp}>
+            <div style={simplifiedStyles.formGroup}>
+              <label htmlFor="email" style={simplifiedStyles.label}>Email</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email..."
+                style={simplifiedStyles.input}
+                required
+              />
+            </div>
+
+            {errorMessage && (
+              <div style={simplifiedStyles.errorMessage}>
+                {errorMessage} {errorMessage.includes('LOG IN') && 
+                  <span 
+                    style={simplifiedStyles.link}
+                    onClick={() => navigate('/signin')}
+                  >
+                    LOG IN
+                  </span>
+                }
+              </div>
+            )}
+
+            {successMessage && (
+              <div style={simplifiedStyles.successMessage}>
+                {successMessage}
+              </div>
+            )}
+
+            <button type="submit" style={simplifiedStyles.button}>
+              Sign Up
+            </button>
+          </form>
+
+          <p style={simplifiedStyles.linkText}>
+            Already have an account?{" "}
+            <span 
+              style={simplifiedStyles.link}
+              onClick={() => navigate('/signin')}
+            >
+              LOG IN
+            </span>
+          </p>
+        </div>
+        
+        <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
+      </div>
+    );
+  }
+
+  // Render original version
   return (
-    <div className="signInPage">
+    <div className="signInPage" style={{ filter: `brightness(${1 * brightnessIndex})` }}>
       <div className="signInCard">
-        <h2 style={{ fontSize: "36px", fontWeight: "300" }}>Create New Account</h2>
-        <p style={{ fontSize: "20px", fontWeight: "300" }}>Join our community to save your preferences and settings!</p>
+        <h2 style={{ fontSize: `${36 * textSizeModifier}px`, fontWeight: "300" }}>Create New Account</h2>
+        <p style={{ fontSize: `${20 * textSizeModifier}px`, fontWeight: "300" }}>Join our community to save your preferences and settings!</p>
 
         <form style={{ 
           width: "100%", 
-          justifyContent: "spaceBetween",
           justifyContent: "center"
         }} onSubmit={handleSignUp}>
           <div style={{ display: "flex", width: "100%", justifyContent: "center", textAlign: "left", padding: "10px" }}>
-            <h2 style={{ width: "20%" }}>Email</h2>
+            <h2 style={{ width: "20%", fontSize: `${20 * textSizeModifier}px` }}>Email</h2>
             <TextInput
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email..."
+              style={{ fontSize: `${16 * textSizeModifier}px` }}
             />
           </div>
 
           {errorMessage && (
-        <div  style={{ color: "red" }} className="error-message" dangerouslySetInnerHTML={{ __html: errorMessage }} />
-      )}
-          {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+            <div style={{ 
+              color: "#ff6b6b", 
+              fontSize: `${16 * textSizeModifier}px`, 
+              marginBottom: '15px',
+              textShadow: '0 0 5px rgba(255, 107, 107, 0.5)'
+            }}>
+              {errorMessage.includes('LOG IN') ? (
+                <>
+                  Email is already in use. Please{" "}
+                  <button 
+                    className="link-button" 
+                    onClick={() => navigate('/signin')}
+                    style={{ 
+                      fontSize: `${16 * textSizeModifier}px`,
+                      cursor: 'pointer',
+                      fontWeight: 'bold' 
+                    }}
+                  >
+                    LOG IN
+                  </button>
+                </>
+              ) : errorMessage}
+            </div>
+          )}
+          
+          {successMessage && (
+            <p style={{ 
+              color: '#7dff8e', 
+              fontSize: `${16 * textSizeModifier}px`, 
+              textShadow: '0 0 5px rgba(125, 255, 142, 0.5)'
+            }}>
+              {successMessage}
+            </p>
+          )}
 
-          <button type="submit">Sign Up</button>
+          <button 
+            type="submit" 
+            className="scifi-button"
+            style={{ 
+              fontSize: `${18 * textSizeModifier}px`,
+              width: '100%',
+              marginTop: '10px',
+              cursor: 'pointer'
+            }}
+          >
+            Sign Up
+          </button>
         </form>
 
         <div>
-          <p>Already have an account? <a href="/signin" class="link-button"><router-link to="/signin">LOG IN</router-link></a></p>
+          <p style={{ 
+            marginTop: '30px', 
+            fontSize: `${16 * textSizeModifier}px`,
+            color: '#c3ff9e',
+            textShadow: '0 0 5px #c3ff9e80'
+          }}>
+            Already have an account?{" "}
+            <button 
+              className="link-button" 
+              onClick={() => navigate('/signin')}
+              style={{ 
+                fontSize: `${16 * textSizeModifier}px`,
+                cursor: 'pointer',
+                fontWeight: 'bold' 
+              }}
+            >
+              LOG IN
+            </button>
+          </p>
         </div>
       </div>
       <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />

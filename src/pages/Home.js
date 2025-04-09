@@ -33,7 +33,6 @@ function Home() {
     letterSpacing: '',
     fontFamily: ''
   });
-console.log(simplify)
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [message, setMessage] = useState('');
   const [showRender, setShowRender] = useState(true);
@@ -233,13 +232,7 @@ console.log(simplify)
           <div style={simplifiedStyles.section}>
             <h1 style={simplifiedStyles.heading}>How would you like your website</h1>
             <div>
-              <span style={simplifiedStyles.subheading}>{displayedText}</span>
-              <span 
-                style={{
-                  ...simplifiedStyles.cursor,
-                  visibility: cursorVisible ? 'visible' : 'hidden'
-                }}
-              ></span>
+<h1>Customised?</h1>
             </div>
           </div>
 

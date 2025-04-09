@@ -10,21 +10,50 @@ function About() {
     setSelectionIndex,
     textSizeModifier,
     brightnessIndex,
-    setBrightnessIndex
+    setBrightnessIndex,
+    simplify
   } = useOutletContext();
-
 
   const [showRender, setShowRender] = useState(true);
 
-  return (
-    <div class="aboutBody" style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', filter:`brightness(${1*brightnessIndex}` }}>
-        
-      <AboutCarousel textSizeModifier={textSizeModifier}/>
-      <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
-      
+  // Simplified styles for About page
+  const simplifiedStyles = {
+    container: {
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#fff',
+      padding: '20px',
+      overflow: 'auto'
+    },
+    title: {
+      fontSize: `${28 * textSizeModifier}px`,
+      color: '#333',
+      marginBottom: '20px',
+      textAlign: 'center',
+      fontFamily: 'Arial, sans-serif',
+      fontWeight: 'bold'
+    }
+  };
 
+  if (simplify) {
+    return (
+      <div style={simplifiedStyles.container}>
+        <h1 style={simplifiedStyles.title}>Features</h1>
+        <AboutCarousel textSizeModifier={textSizeModifier} simplify={simplify} />
+        <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="aboutBody" style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', filter: `brightness(${1 * brightnessIndex}` }}>
+      <AboutCarousel textSizeModifier={textSizeModifier} simplify={simplify} />
+      <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
     </div>
   );
-};
+}
 
 export default About;

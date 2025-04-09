@@ -38,7 +38,7 @@ const Background = ({ showRender,brightnessIndex,simplify }) => {
   return (
     <div style={bgStyles}>
 
-      {simplify && (   <div>   <div className="coordinates">
+      {!simplify && (   <div>   <div className="coordinates">
         <div className="mouse-coordinates">
           <div className="mouse-box">
             <p>Mouse X: {mouseX}</p>
