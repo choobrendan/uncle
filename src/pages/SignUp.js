@@ -16,7 +16,9 @@ function SignUp() {
     textSizeModifier,
     brightnessIndex,
     setBrightnessIndex,
-    simplify
+    simplify,
+    setIsUserLoggedIn,
+    isUserLoggedIn,
   } = useOutletContext();
   
   const navigate = useNavigate();
@@ -30,27 +32,25 @@ function SignUp() {
     setErrorMessage('');
 
     try {
-      // Check if the email already exists in the database
+
       const { data: existingUser, error: fetchError } = await supabase
         .from("userData")
         .select()
-        .eq('email', email); // Check if email already exists
+        .eq('email', email); 
 
       if (fetchError) {
         console.error("Error fetching user data:", fetchError);
         return { data: null, error: fetchError };
       }
 
-      // If user with this email exists, handle it accordingly
       if (existingUser.length > 0) {
         setErrorMessage('Email is already in use. Please LOG IN.');
         return;
       }
 
-      // If email does not exist, insert new user
       const { data: userDataFetch, error: errorDataFetch } = await supabase
         .from("userData")
-        .select(); // Fetching user data to determine new ID
+        .select();
 
       console.log(userDataFetch, "userData");
       if (errorDataFetch) {
@@ -63,7 +63,6 @@ function SignUp() {
         userDataId = 0;
       }
 
-      // Insert the new user with the email
       const { data: emailData, error: errorData } = await supabase
         .from("userData")
         .upsert({ email: email, id: userDataId });
@@ -74,6 +73,7 @@ function SignUp() {
       }
 
       console.log("Inserted user with ID:", userDataId);
+      setIsUserLoggedIn(email)
       navigate('/onboarding');
     } catch (error) {
       setErrorMessage(error.message.includes('Invalid login credentials') 

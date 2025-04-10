@@ -14,7 +14,8 @@ function Home() {
     textSizeModifier,
     brightnessIndex,
     setBrightnessIndex,
-    simplify
+    simplify,
+    isUserLoggedIn,
   } = useOutletContext();
 
   // State variables

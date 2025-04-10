@@ -16,7 +16,8 @@ function SignIn() {
     textSizeModifier,
     brightnessIndex,
     setBrightnessIndex,
-    simplify
+    simplify,
+    setIsUserLoggedIn,
   } = useOutletContext();
 
   const navigate = useNavigate();
@@ -46,6 +47,8 @@ function SignIn() {
       }
 
       console.log("User found, proceed with sign-in logic");
+      setIsUserLoggedIn(email)
+      navigate('/');
     } catch (error) {
       setErrorMessage('Sign-in failed. Please try again.');
       console.error('Sign-in error:', error);

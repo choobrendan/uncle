@@ -27,8 +27,7 @@ command=[
 
 ]
 
-commandNavigation=     
-[{ "id": 1, "name": "Navigate to home page" },
+commandNavigation=[{ "id": 1, "name": "Navigate to home page" },
   { "id": 2, "name": "Navigate to search page"},
   { "id": 3, "name": "Navigate to profile page" },
   { "id": 4, "name": "Navigate to activity page"},
@@ -40,7 +39,7 @@ commandNavigation=
   { "id": 10, "name": "Save a post"},
   { "id": 11, "name": "Follow a user"},
   { "id": 12, "name": "Send a message" },
-  { "id": 13, "name": "Open settings" },]
+  { "id": 13, "name": "Open settings" }]
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 

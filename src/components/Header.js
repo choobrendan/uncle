@@ -1,6 +1,12 @@
 import React from 'react';
 
-const Header = ({ item, brightnessIndex, setBrightnessIndex, simplify }) => {
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = "https://hgatxkpmrskbdqigenav.supabase.co";
+const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+const Header = ({ item, brightnessIndex, setBrightnessIndex, simplify,isUserLoggedIn }) => {
   // Simplified styles for the header and navigation
   const simplifiedStyles = {
     header: {
@@ -47,7 +53,7 @@ const Header = ({ item, brightnessIndex, setBrightnessIndex, simplify }) => {
       fontWeight: 'bold'
     }
   };
-
+console.log(isUserLoggedIn)
   // Apply simplified styles when simplify is true
   if (simplify) {
     return (
@@ -89,12 +95,18 @@ const Header = ({ item, brightnessIndex, setBrightnessIndex, simplify }) => {
           >
             Graph
           </a>
-          <a 
+          {isUserLoggedIn === "" &&
+          (<a 
             href="/signin" 
             style={simplifiedStyles.signInButton}
           >
             Sign In
-          </a>
+          </a>) }
+          {
+          (isUserLoggedIn !=="" &&
+            <p>{isUserLoggedIn}</p>
+          )}
+
         </div>
       </div>
     );
