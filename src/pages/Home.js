@@ -16,6 +16,7 @@ function Home() {
     setBrightnessIndex,
     simplify,
     isUserLoggedIn,
+    setIsUserLoggedIn
   } = useOutletContext();
 
   // State variables
@@ -64,12 +65,13 @@ function Home() {
       backgroundColor: '#fff',
       color: '#333',
       fontFamily: 'Arial, sans-serif',
-      padding: '20px',
+      paddingTop: '100px',
       textAlign: 'center',
       overflow: 'auto'
     },
     content: {
-      maxWidth: '800px',
+      minWidth: '800px',
+      maxWidth: "80%",
       width: '100%',
     },
     heading: {
@@ -238,9 +240,9 @@ function Home() {
           </div>
 
           <div style={simplifiedStyles.section}>
-            <h2 style={simplifiedStyles.heading}>Website Customization</h2>
+            <h2 style={simplifiedStyles.heading}>Website Customisation</h2>
             <p style={simplifiedStyles.subheading}>
-              Our website offers various customization options to make your browsing experience better.
+              Our website offers easy automatic and manual customisation options to make your browsing experience better.
               You can adjust font size, brightness, and more to suit your needs.
             </p>
           </div>

@@ -10,7 +10,14 @@ function App() {
   const navigate = useNavigate();
   const [brightnessIndex, setBrightnessIndex] = useState(1);
   const [simplify, setSimplify]=useState(true)
-  const [isUserLoggedIn, setIsUserLoggedIn]= useState("");
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(() => {
+    return localStorage.getItem("isUserLoggedIn") || "";
+  });
+  
+  useEffect(() => {
+    localStorage.setItem("isUserLoggedIn", isUserLoggedIn);
+  }, [isUserLoggedIn]);
+  
   useEffect(() => {
     switch (selectionIndex) {
       case 1: 
@@ -45,7 +52,7 @@ function App() {
       {location.pathname!=="/onboarding" && (<Header
         setBrightnessIndex={setBrightnessIndex}
         brightnessIndex={brightnessIndex}
-        simplify={simplify}     isUserLoggedIn={    isUserLoggedIn}
+        simplify={simplify}     isUserLoggedIn={    isUserLoggedIn} setIsUserLoggedIn={setIsUserLoggedIn}
       />)}
        {location.pathname!=="/onboarding" && ( <Background
         showRender={false}

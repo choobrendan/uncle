@@ -60,7 +60,8 @@ function Graph() {
         min: Infinity,
         max: -Infinity,
         uniqueValues: new Set(),
-        sampleValues: []
+        sampleValues: [],
+        hasNulls: false
       };
     });
     
@@ -68,13 +69,38 @@ function Graph() {
     data.forEach(row => {
       Object.entries(row).forEach(([colName, value]) => {
         const col = info[colName];
+        
+        // Check for null values
+        if (value === null || value === undefined || 
+            (typeof value === 'string' && 
+             ['na', 'n/a', 'null', ''].includes(value.toString().toLowerCase().trim()))) {
+          col.hasNulls = true;
+          return; // Skip further processing for this value
+        }
+        
         const parsed = parseValue(value);
         
-        // Type detection
-        if (col.type === 'unknown') col.type = parsed.type;
-        else if (col.type !== parsed.type) col.type = 'string';
+        // Type detection - don't change from number to string just because of nulls
+        if (col.type === 'unknown') {
+          col.type = parsed.type;
+        } else if (col.type !== parsed.type && !(col.type === 'number' && parsed.type === 'null')) {
+          // Only change type if it's not a number column encountering a null
+          if (col.type === 'number' && parsed.type === 'string') {
+            // Try to convert string to number before changing type
+            const numValue = Number(parsed.value);
+            if (!isNaN(numValue)) {
+              // It's a numeric string, treat as number
+              parsed.type = 'number';
+              parsed.value = numValue;
+            } else {
+              col.type = 'string';
+            }
+          } else {
+            col.type = 'string';
+          }
+        }
         
-        // Numeric ranges
+        // Numeric ranges - only update if it's a valid number
         if (parsed.type === 'number') {
           col.min = Math.min(col.min, parsed.value);
           col.max = Math.max(col.max, parsed.value);
@@ -87,9 +113,30 @@ function Graph() {
       });
     });
     
+    // Post-analysis: Second pass to verify number columns
+    Object.entries(info).forEach(([colName, col]) => {
+      // If a column has some numeric values and some nulls, keep it as number
+      if (col.type === 'unknown' && col.hasNulls) {
+        // Check if there are any numeric values in the column
+        const hasNumbers = data.some(row => {
+          const value = row[colName];
+          if (value === null || value === undefined || 
+              (typeof value === 'string' && 
+               ['na', 'n/a', 'null', ''].includes(value.toString().toLowerCase().trim()))) {
+            return false;
+          }
+          const numValue = Number(value);
+          return !isNaN(numValue);
+        });
+        col.type = hasNumbers ? 'number' : 'string';
+      }
+    });
+    
     // Convert Sets to Arrays and clean up
     Object.values(info).forEach(col => {
-      col.uniqueValues = Array.from(col.uniqueValues).sort();
+      col.uniqueValues = Array.from(col.uniqueValues)
+        .filter(val => val !== null && val !== undefined)
+        .sort();
       if (col.min === Infinity) delete col.min;
       if (col.max === -Infinity) delete col.max;
     });

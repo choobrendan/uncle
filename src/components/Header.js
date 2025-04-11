@@ -1,13 +1,17 @@
 import React from 'react';
-
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = "https://hgatxkpmrskbdqigenav.supabase.co";
 const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const Header = ({ item, brightnessIndex, setBrightnessIndex, simplify,isUserLoggedIn }) => {
-  // Simplified styles for the header and navigation
+const Header = ({ item, brightnessIndex, setBrightnessIndex, simplify, isUserLoggedIn, setIsUserLoggedIn }) => {
+
+  async function handleSignOut() {
+    setIsUserLoggedIn("");
+    localStorage.removeItem("isUserLoggedIn");
+  }
+
   const simplifiedStyles = {
     header: {
       width: '100%',
@@ -50,78 +54,43 @@ const Header = ({ item, brightnessIndex, setBrightnessIndex, simplify,isUserLogg
       color: '#fff',
       borderRadius: '4px',
       textDecoration: 'none',
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      cursor: 'pointer'
     }
   };
-console.log(isUserLoggedIn)
-  // Apply simplified styles when simplify is true
+
+  // Simplified header
   if (simplify) {
     return (
       <div style={simplifiedStyles.header}>
         <div style={simplifiedStyles.centered}>
-          <a 
-            href="/about" 
-            style={simplifiedStyles.navLink}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#f5f5f5';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-            }}
-          >
-            About
-          </a>
-          <a 
-            href="/navigation" 
-            style={simplifiedStyles.navLink}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#f5f5f5';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-            }}
-          >
-            Navigation
-          </a>
-          <a 
-            href="/graph" 
-            style={simplifiedStyles.navLink}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#f5f5f5';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-            }}
-          >
-            Graph
-          </a>
-          {isUserLoggedIn === "" &&
-          (<a 
-            href="/signin" 
-            style={simplifiedStyles.signInButton}
-          >
-            Sign In
-          </a>) }
-          {
-          (isUserLoggedIn !=="" &&
-            <p>{isUserLoggedIn}</p>
-          )}
+          <a href="/about" style={simplifiedStyles.navLink}>About</a>
+          <a href="/navigation" style={simplifiedStyles.navLink}>Navigation</a>
+          <a href="/graph" style={simplifiedStyles.navLink}>Graph</a>
 
+          {isUserLoggedIn === "" ? (
+            <a href="/signin" style={simplifiedStyles.signInButton}>Sign In</a>
+          ) : (
+            <a onClick={handleSignOut} style={simplifiedStyles.signInButton}>Sign Out</a>
+          )}
         </div>
       </div>
     );
   }
 
-  // Original header with sci-fi styling
+  // Sci-fi header
   return (
     <div className="header" style={{ filter: `brightness(${1 * brightnessIndex}` }}>
       <div className="centered">
-        <a className="scifi-button" href="/about"><router-link to="/about">About</router-link></a>
-        <a className="scifi-button" href="/navigation"><router-link to="/navigation">Navigation</router-link></a>
-        <a className="scifi-button" href="/graph"><router-link to="/graph">Graph</router-link></a>
-        <a className="scifi-button" href="/signin" style={{ display: "flex", position: "absolute", right: "40px" }}>Sign In</a>
-      </div>
-      <div>
+        <a className="scifi-button" href="/about">About</a>
+        <a className="scifi-button" href="/navigation">Navigation</a>
+        <a className="scifi-button" href="/graph">Graph</a>
+
+        {isUserLoggedIn === "" ? (
+          <a className="scifi-button" href="/signin" style={{ position: "absolute", right: "40px" }}>Sign In</a>
+        ) : (
+          <a className="scifi-button" onClick={handleSignOut} style={{ position: "absolute", right: "40px", cursor: 'pointer' }}>Sign Out</a>
+        )}
       </div>
     </div>
   );
