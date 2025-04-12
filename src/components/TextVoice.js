@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TextInput from './TextInput';
 import './TextBox.css';
 
-const TextVoice = ({ suggestions, setSelectionIndex, selectionIndex, text, onInput }) => {
+const TextVoice = ({ suggestions, setSelectionIndex, selectionIndex, text, onInput ,page,columnInfo}) => {
   const [inputValue, setInputValue] = useState(text || '');
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
@@ -40,7 +40,34 @@ const TextVoice = ({ suggestions, setSelectionIndex, selectionIndex, text, onInp
       })
       .catch((error) => console.error('Error sending message:', error));
   };
+  const sendPredict = (result) => {
+    console.log(columnInfo)
+    console.log(JSON.stringify(columnInfo,undefined,2))
+    fetch('http://localhost:8000/filter_sentence', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keys: Object.keys(columnInfo), message:"I want the species to be adelie, the culmen length to be between 20 and 21, and flipper length to be more than 190"  }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+console.log(data)
+      })
+      .catch((error) => console.error('Error sending message:', error));
 
+
+
+
+    // fetch('http://localhost:8000/predict-message', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ message: result }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((data) => {
+
+    //   })
+    //   .catch((error) => console.error('Error sending message:', error));
+  };
   const selectSuggestion = (suggestion) => {
     setInputValue(suggestion);
     if (onInput) {
@@ -59,6 +86,10 @@ const TextVoice = ({ suggestions, setSelectionIndex, selectionIndex, text, onInp
   useEffect(() => {
     if (inputValue.trim()) {
       sendText(inputValue);
+      console.log(page)
+      if(page==="/graph"){
+        sendPredict(inputValue);
+      }
     }
   }, [inputValue]);
 

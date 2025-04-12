@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import { useOutletContext, useNavigate,useLocation } from 'react-router-dom';
 import VoiceButton from '../components/VoiceButton';
 import TextInput from '../components/TextInput';
 import Papa from 'papaparse';
 import "./Graph.css"
 
 function Graph() {
+  const location = useLocation();
   const {
     selectionIndex,
     setSelectionIndex,
@@ -776,9 +777,11 @@ function Graph() {
         )}
         
         <VoiceButton
-          setSelectionIndex={setSelectionIndex}
-          selectionIndex={selectionIndex}
-        />
+        setSelectionIndex={setSelectionIndex}
+        selectionIndex={selectionIndex}
+        page={location.pathname}
+        columnInfo={columnInfo}
+      />
       </div>
     );
   }
@@ -886,6 +889,8 @@ function Graph() {
       <VoiceButton
         setSelectionIndex={setSelectionIndex}
         selectionIndex={selectionIndex}
+        page={location.pathname}
+        columnInfo={columnInfo}
       />
     </div>
   );

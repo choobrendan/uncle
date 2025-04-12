@@ -3,7 +3,7 @@ import { useSpeechRecognition } from '../composables/useSpeechRecognition';
 import './VoiceButton.css';
 import TextVoice from './TextVoice';
 
-const VoiceButton = ({ toggleMainTextDiv,selectionIndex,setSelectionIndex }) => {
+const VoiceButton = ({ toggleMainTextDiv,selectionIndex,setSelectionIndex,page,columnInfo }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [result, setResult] = useState('');
   const [error, setError] = useState('');
@@ -47,9 +47,11 @@ const VoiceButton = ({ toggleMainTextDiv,selectionIndex,setSelectionIndex }) => 
 
     const newTimer = setTimeout(() => {
       sendVoice();
+
     }, 2000);
     setTimer(newTimer);
   };
+
 
   const sendVoice = () => {
     fetch('http://localhost:8000/send-message', {
@@ -118,7 +120,7 @@ const VoiceButton = ({ toggleMainTextDiv,selectionIndex,setSelectionIndex }) => 
 
       {isExpanded && (
         <div>
-          {error ? <p>{error}</p> : <TextVoice text={result} onInput={voiceTimer} selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex} />}
+          {error ? <p>{error}</p> : <TextVoice text={result} onInput={voiceTimer} selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex} page={page} columnInfo={columnInfo} />}
         </div>
       )}
     </section>
