@@ -12,7 +12,7 @@ import transformers
 import numpy as np
 import codecs
 import tensorflow as tf
-from typing import List
+from typing import Dict, List, Union
 import ast
 import tqdm
 import matplotlib.pyplot as plt
@@ -37,7 +37,6 @@ from nltk.corpus import stopwords
 import re
 
 nltk.download('stopwords')
-doc = nlp(filtered_sentence)
 nlp = spacy.load('en_core_web_sm')
 app = FastAPI()
 
@@ -79,9 +78,13 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 class Message(BaseModel):
     message: str
 
+class Feature(BaseModel):
+    type: str
+    uniqueValues: List[Union[str, float, int]]
+
 class Filter(BaseModel):
     message: str
-    keys: List[str]  # Assuming the keys are a list of strings
+    keys: Dict[str, Feature]
 
 
 num_layers = 6
@@ -588,7 +591,9 @@ async def send_message(message: Message):
     return sentence
 
 
-nlp = spacy.load("en_core_web_sm")
+
+
+# --- Helper Functions ---
 
 def generate_ngrams(tokens, min_n=2, max_n=6):
     ngrams = []
@@ -597,31 +602,26 @@ def generate_ngrams(tokens, min_n=2, max_n=6):
             ngrams.append(' '.join(tokens[i:i+n]))
     return ngrams
 
-# Extract (metadata_key, matched_phrase) pairs
 def extract_phrases(target_phrases, sentence, threshold=0.5):
+    """Extract overlapping n-grams from the sentence that match target phrases."""
     doc = nlp(sentence)
     sentence_tokens = [token.text for token in doc]
     ngrams = generate_ngrams(sentence_tokens, min_n=2, max_n=6)
-
     if not ngrams:
         return []
-
+    print("Target phrases:", target_phrases)
     target_embeddings = model.encode(target_phrases)
     ngram_embeddings = model.encode(ngrams)
-
     cos_sim = util.cos_sim(target_embeddings, ngram_embeddings)
-
     matches = []
     for i, phrase in enumerate(target_phrases):
         for j, ng in enumerate(ngrams):
             if cos_sim[i][j] > threshold:
                 matches.append((ng, cos_sim[i][j].item(), i))
-
     matches.sort(key=lambda x: (-x[1], -len(x[0].split())))
-
     used_indices = set()
     selected = []
-
+    
     def get_span(ngram):
         words = ngram.split()
         for i in range(len(sentence_tokens) - len(words) + 1):
@@ -640,43 +640,21 @@ def extract_phrases(target_phrases, sentence, threshold=0.5):
         if not overlap:
             selected.append((target_phrases[idx], ng))
             used_indices.add((start, end))
-
     selected.sort(key=lambda pair: get_span(pair[1])[0])
     return selected
-
-# Replace matched phrases using their metadata index
+from num2words import num2words
 def process_sentence_with_placeholders(sentence, matched_pairs, target_phrases):
+    """Replace each occurrence of a matched target phrase with a placeholder."""
     placeholder_sentence = sentence
     replacements = {}
-
     for original_phrase, matched_text in matched_pairs:
         idx = target_phrases.index(original_phrase)
         placeholder = f"<target {idx + 1}>"
         placeholder_sentence = placeholder_sentence.replace(matched_text, placeholder, 1)
         replacements[placeholder] = matched_text
-
     return placeholder_sentence, replacements
-    result = []
-    
-    for item in input_list:
-
-        words = re.split(r'[-_]+', item)
-        result.extend(words)
-    
-    return result
-######
-
-
-
-
-import re
 
 def convert_word_to_num(word):
-    """
-    Convert a number word or string digit to a numeric value.
-    For words such as 'twenty' we have a simple mapping; if a digit is given,
-    float(word) is used.
-    """
     word = word.lower()
     mapping = {
         'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4,
@@ -684,78 +662,105 @@ def convert_word_to_num(word):
         'ten': 10, 'eleven': 11, 'twelve': 12, 'thirteen': 13,
         'fourteen': 14, 'fifteen': 15, 'sixteen': 16, 'seventeen': 17,
         'eighteen': 18, 'nineteen': 19, 'twenty': 20,
-        # Extend with more words if needed.
     }
     try:
-        # If it's a number written as digits, convert directly.
         return float(word)
     except ValueError:
-        # Otherwise, lookup the word.
         return mapping.get(word, None)
 
-def process_clause(clause, target_index, label=None):
+# --- Modified process_clause ---
+def process_clause(clause, target_index, target_phrases, matched_indexes,keys):
+    """
+    Process a clause. For numeric comparisons (between, more than, less than), handle as before.
+    For a clause with "to be", match against the actual attribute values, and use the matched index if available.
+    """
     output_clause = clause
     target_entries = []
+    # Determine the attribute name using target_index (1-based)
+    attr_index = int(target_index) - 1
+    attribute_name = target_phrases[attr_index] if attr_index < len(target_phrases) else None
+    conjunction_phrases = ["between","lesser","greater"]
+    matched_pairs = list(extract_phrases(conjunction_phrases, clause,0.6))
+    if len(matched_pairs)==0:
+        feature = keys[target_phrases[int(target_index)-1]]
+        target_word = feature.uniqueValues[matched_indexes[target_phrases[int(target_index)-1]][0]-1].lower()
+        pattern = r"(\b" + re.escape(target_word) + r"\b)"
+        match = re.search(pattern, clause.lower())
+        if match:
+            value_text = match.group(1)
+            placeholder_label = f"<label { matched_indexes[target_phrases[int(target_index)-1]][0]}>"
+            output_clause = clause.replace(value_text, placeholder_label)
+            target_entries.append({f"label {matched_indexes[target_phrases[int(target_index)-1]][0]}": value_text})
+    elif "between" in list(matched_pairs[0])[1]:
+        digit_count = 0
+        num1 = None
+        num2 = None
+        target_entries = []
 
-    if "between" in clause:
-        match = re.search(r'between\s+(\S+)\s+and\s+(\S+)', clause)
-        if match:
-            first_val = match.group(1)
-            second_val = match.group(2)
-            num1 = convert_word_to_num(first_val)
-            num2 = convert_word_to_num(second_val)
-            # Build placeholders using the target index (kept as a word)
-            placeholder_sm = f"<num {target_index} sm>"
-            placeholder_lg = f"<num {target_index} lg>"
-            # Replace the text "between ... and ..." with a version that uses these placeholders.
-            new_clause = re.sub(r'between\s+\S+\s+and\s+\S+', f"between {placeholder_sm} and {placeholder_lg}", clause)
-            output_clause = new_clause
-            target_entries.append({f"num {target_index} sm": num1})
-            target_entries.append({f"num {target_index} lg": num2})
-    # Case 2: "more than" or "less than"
-    elif "more than" in clause:
-        match = re.search(r'more than\s+(\S+)', clause)
-        if match:
-            val = match.group(1)
-            num = convert_word_to_num(val)
-            placeholder_lg = f"<num {target_index} lg>"
-            new_clause = re.sub(r'more than\s+\S+', f"more than {placeholder_lg}", clause)
-            output_clause = new_clause
-            target_entries.append({f"num {target_index} lg": num})
-    elif "less than" in clause:
-        match = re.search(r'less than\s+(\S+)', clause)
-        if match:
-            val = match.group(1)
-            num = convert_word_to_num(val)
-            placeholder_sm = f"<num {target_index} sm>"
-            new_clause = re.sub(r'less than\s+\S+', f"less than {placeholder_sm}", clause)
-            output_clause = new_clause
-            target_entries.append({f"num {target_index} sm": num})
-    # Case 3: Categorical value (e.g., species) where the clause does not include a numeric comparison.
-    else:
-        match = re.search(r'to be\s+(\S+)', clause)
-        if match:
-            placeholder_label = f"<label {target_index}>"
-            new_clause = re.sub(r'to be\s+\S+', f"to be {placeholder_label}", clause)
-            output_clause = new_clause
+        clause_words = clause.split()
+        for i, word in enumerate(clause_words):
+            if word.isdigit():  
+                digit_count += 1
+                if digit_count == 1:
+                    num1 = word
+                    clause_words[i] = f"<num {target_index} sm>" 
+                elif digit_count == 2:
+                    num2 = word
+                    clause_words[i] = f"<num {target_index} lg>" 
+                    break 
+        output_clause = " ".join(clause_words)
+
+        # Append the target entries
+        target_entries.append({f"num {num2words(target_index)} sm": num1})
+        target_entries.append({f"num {num2words(target_index)} lg": num2})
+
+    elif "more than" in list(matched_pairs[0])[1]:
+        digit_count = 0
+        num1 = None
+        target_entries = []
+
+        clause_words = clause.split()
+        for i, word in enumerate(clause_words):
+            if word.isdigit():  
+                    num1 = word
+                    clause_words[i] = f"<num {target_index} sm>" 
+                    break 
+        output_clause = " ".join(clause_words)
+
+        target_entries.append({f"num {num2words(target_index)} sm": num1})
+
+    elif "less than" in list(matched_pairs[0])[1]:
+        digit_count = 0
+        num1 = None
+        target_entries = []
+
+        clause_words = clause.split()
+        for i, word in enumerate(clause_words):
+            if word.isdigit():  
+                    num1 = word
+                    clause_words[i] = f"<num {target_index} sm>" 
+                    break 
+        output_clause = " ".join(clause_words)
+        target_entries.append({f"num {num2words(target_index)} sm": num1})
+
+
+
     return output_clause, target_entries
 
-def process_sentence(sentence, preprocessed_sentence, data_dict, match_index):
-
+# --- Modified process_sentence ---
+def process_sentence(sentence, preprocessed_sentence, data_dict, matched_indexes, target_phrases, keys):
+    """
+    Process each clause in the preprocessed sentence, replacing target phrases with
+    appropriate placeholders and handling numeric/categorical comparisons.
+    """
     clauses = [cl.strip() for cl in preprocessed_sentence.split(',')]
     modified_clauses = []
     all_target_entries = []
-
     for clause in clauses:
         target_match = re.search(r'<target (\w+)>', clause)
         if target_match:
             target_index = target_match.group(1)
-
-            if not (("between" in clause) or ("more than" in clause) or ("less than" in clause)):
-
-                modified_clause, target_entries = process_clause(clause, target_index, label=match_index)
-            else:
-                modified_clause, target_entries = process_clause(clause, target_index)
+            modified_clause, target_entries = process_clause(clause, target_index, target_phrases, matched_indexes,keys)
             modified_clauses.append(modified_clause)
             all_target_entries.extend(target_entries)
         else:
@@ -764,91 +769,119 @@ def process_sentence(sentence, preprocessed_sentence, data_dict, match_index):
     modified_sentence = ", ".join(modified_clauses)
     return modified_sentence, all_target_entries
 
-
-
+# --- FastAPI Endpoint using the Pydantic Filter model ---
 @app.post("/filter_sentence")
 async def send_message(filter: Filter):
-    filtered_sentence = [word for word in filter.message.split() if word.lower() not in stopwords.words('english')]
-    filtered_sentence = " ".join(filtered_sentence)
-
-
-
+    # Remove stopwords from the original message for clarity.
+    filtered_sentence = " ".join([word for word in filter.message.split() if word.lower() not in stopwords.words('english')])
+    print("Filtered sentence:", filtered_sentence)
     doc = nlp(filtered_sentence)
-
-    # Extract numbers and their closest noun-like words
+    
+    # Step 1: Extract numbers and their closest noun-like words.
     number_info = []
-
     for i, token in enumerate(doc):
         if token.like_num:
-            num_value = float(token.text)
-            # Search backward for the nearest noun or compound
+            try:
+                num_value = float(token.text)
+            except ValueError:
+                continue
             closest = None
             for j in range(i - 1, -1, -1):
                 if doc[j].pos_ in ['NOUN', 'PROPN', 'ADJ']:
-                    # Check for compound phrases like "culmen length"
                     if j > 0 and doc[j - 1].dep_ == 'compound':
                         closest = f"{doc[j - 1].text} {doc[j].text}"
                     else:
                         closest = doc[j].text
                     break
             number_info.append((num_value, closest))
-
-    # Sort by number
     number_info.sort(key=lambda x: x[0])
-
-    # Create the final dictionary
     result_dict = {num: label for num, label in number_info}
-    print(result_dict)
-
-
+    print("Extracted number info:", result_dict)
+    
+    # Step 2: Process each attribute in the filter keys to build matched_indexes.
     matched_indexes_dict = {}
-
-    # === Step 2: Process each attribute dynamically ===
-    for attribute, info in metadata.items():
-        matched_indexes = []  # List to store matched indexes for each attribute
-        attribute_tokens = attribute.lower().split()  # Handle multi-word attributes
-
-        # === Check for multi-word attribute in the sentence ===
+    for attribute, info in filter.keys.items():
+        # For numeric types, set min and max if not provided.
+        if info.type == "number" and ("min" not in info or "max" not in info):
+            try:
+                numeric_values = [float(x) for x in info.uniqueValues]
+                info.__dict__.update({"min": min(numeric_values), "max": max(numeric_values)})
+            except Exception as e:
+                print(f"Error processing attribute '{attribute}': {e}")
+        matched_indexes = []
+        attribute_tokens = attribute.lower().split()
         for token in doc:
-            # Check if the token starts a sequence that matches the multi-word attribute
             if token.text.lower() == attribute_tokens[0]:
-                # Check if the following tokens match the full attribute
-                if all(doc[token.i + i].text.lower() == attribute_tokens[i] for i in range(len(attribute_tokens))):
-                    window_size = 8  # Adjustable window size for surrounding context
+                if all((token.i + i < len(doc)) and (doc[token.i + i].text.lower() == attribute_tokens[i]) 
+                       for i in range(len(attribute_tokens))):
+                    window_size = 8
                     start = max(token.i - window_size, 0)
                     end = min(token.i + window_size, len(doc))
-                    
-                    # === Check for matching possible values within the window ===
                     for nearby_token in doc[start:end]:
                         nearby_word = nearby_token.text.lower()
-                        
-                        # If it's a string-type attribute, match unique values (like species)
-                        if info["type"] == "string" and nearby_word in [v.lower() for v in info["uniqueValues"]]:
-                            matched_indexes.append([v.lower() for v in info["uniqueValues"]].index(nearby_word) + 1)  # 1-based index
+                        if info.type == "string" and nearby_word in [v.lower() for v in info.uniqueValues]:
+                            matched_indexes.append([v.lower() for v in info.uniqueValues].index(nearby_word) + 1)
                             break
-                        
-                        # If it's a number-type attribute, match values within the min/max range
-                        elif info["type"] == "number" and nearby_token.like_num:
+                        elif info.type == "number" and nearby_token.like_num:
                             try:
                                 value = float(nearby_token.text)
-                                if info["min"] <= value <= info["max"]:
+                                if info.__dict__.get("min") <= value <= info.__dict__.get("max"):
                                     matched_indexes.append(value)
                                     break
                             except ValueError:
                                 continue
-
-        # If matches were found, store them in the result dictionary
         if matched_indexes:
             matched_indexes_dict[attribute] = matched_indexes
-
-    # === Step 3: Output the matched results ===
-    print(f"Matched indexes for attributes: {matched_indexes_dict}")
-    matched_pairs = extract_phrases(filter.keys, filter.message)
-    target_phrases = list(filter.message.keys())
+    print("Matched indexes for attributes:", matched_indexes_dict)
+    
+    # Step 3: Process target phrases in the filter message.
+    target_phrases = list(filter.keys.keys())
+    matched_pairs = extract_phrases(target_phrases, filter.message)
+    print("Matched target phrase pairs:", matched_pairs)
     processed_sentence, replacements = process_sentence_with_placeholders(filter.message, matched_pairs, target_phrases)
+    print("Processed sentence with placeholders:", processed_sentence)
+    print("Replacements mapping:", replacements)
+    
+    # Step 4: Final processing of the sentence.
+    modified_sentence, target_dict = process_sentence(filter.message, processed_sentence, result_dict, matched_indexes_dict, target_phrases,filter.keys)
 
+    if len(replacements)!=0:
+        words = modified_sentence.split()
 
+        # Loop through each word by index so that modifications reflect in the list
+        for index, word in enumerate(words):
+            # Check each character if necessary (for more granular control)
+            # For now we assume we're handling whole words
+            if word.isdigit():
+                words[index] = num2words(int(word))
+            # If you need to inspect individual characters or symbols within a word:
+            else:
+                # Optionally, if you require to modify characters (for special cases), you could rebuild the word
+                new_word = ""
+                for char in word:
+                    # Check if the character is a digit (or any specific symbol)
+                    if char.isdigit():
+                        new_word += num2words(int(char))
+                    else:
+                        new_word += char
+                words[index] = new_word
 
-    modified_sentence, target_dict = process_sentence(filter.message, processed_sentence, result_dict, matched_indexes)
-    return modified_sentence
+        # Rejoin the words into a sentence.
+        modified_sentence = " ".join(words)
+        print("Final modified sentence:", modified_sentence)
+        print("Final target dictionary:", target_dict)
+        sentence_o=""      
+        a, b = evaluate_r(modified_sentence,0.01)
+        for i in a[1:]:
+            print(tokenizer_a.decode([i]),end="")
+            sentence_o+=(""+tokenizer_a.decode([i]))
+        sentence=sentence_o
+        print(sentence)
+        return {
+            "sentence": sentence,
+            "target_string": target_dict
+        }
+    else:
+        return {}
+
 

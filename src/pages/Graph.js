@@ -26,7 +26,8 @@ function Graph() {
   const [file, setFile] = useState(null);
   const [numericFilterInputs, setNumericFilterInputs] = useState({});
   const [activeFilterColumns, setActiveFilterColumns] = useState([]); // Track active filter columns
-  const [allColumns, setAllColumns] = useState([]); // Track all available columns
+  const [allColumns, setAllColumns] = useState([]); 
+
   
   // Handle file upload
   const handleFileUpload = (e) => {
@@ -234,7 +235,7 @@ function Graph() {
       }
     }));
   };
-
+  
   const applyNumericFilter = (colName) => {
     const input = numericFilterInputs[colName];
     const value1 = parseFloat(input.value1);
@@ -304,8 +305,10 @@ function Graph() {
       });
     });
     setFilteredData(filtered);
+    
   }, [filters, csvData]);
-
+  console.log(activeFilterColumns)
+  console.log(filters)
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   
   // Render filter control for a specific column
@@ -781,6 +784,8 @@ function Graph() {
         selectionIndex={selectionIndex}
         page={location.pathname}
         columnInfo={columnInfo}
+        setActiveFilterColumns={setActiveFilterColumns}
+        setFilters={setFilters}
       />
       </div>
     );
@@ -891,6 +896,8 @@ function Graph() {
         selectionIndex={selectionIndex}
         page={location.pathname}
         columnInfo={columnInfo}
+        setActiveFilterColumns={setActiveFilterColumns}
+        setFilters={setFilters}
       />
     </div>
   );
