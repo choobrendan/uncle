@@ -125,7 +125,7 @@ const TextVoice = ({
    */
   function generateKeyFilter(sentence, simplified) {
     const filters = {};
-
+  
     // Regular expression to extract tokens enclosed in angle brackets, e.g. "target three", "between", etc.
     const tagPattern = /<([^>]+)>/g;
     const tags = [];
@@ -133,7 +133,7 @@ const TextVoice = ({
     while ((match = tagPattern.exec(sentence)) !== null) {
       tags.push(match[1]);
     }
-
+  
     // Extract all number sequences (as strings) using a regular expression.
     // This supports integers and decimals.
     const numberPattern = /\b\d+(?:\.\d+)?\b/g;
@@ -141,25 +141,25 @@ const TextVoice = ({
     while ((match = numberPattern.exec(sentence)) !== null) {
       numbers.push(match[0]);
     }
-
+  
     // Mapping operation tokens to desired operation strings.
     const opMapping = {
       between: "between",
       lower: "lessThan",
-      greater: "greaterThan",
+      higher: "greaterThan",
       equals: "equals",
     };
-
+  
     let numIdx = 0; // pointer for numbers array
     let currentKey = null;
     const allKeys = Object.keys(simplified);
-
+  
     tags.forEach((tag) => {
       const parts = tag.split(/\s+/);
       if (parts.length === 0) return;
-
+  
       const tokenType = parts[0].toLowerCase();
-
+  
       if (tokenType === "target") {
         // Expect format: target <numberWord>
         if (parts.length > 1) {
@@ -191,7 +191,10 @@ const TextVoice = ({
           } else {
             // For single-number operations such as "lessThan", "greaterThan", or "equals".
             if (numIdx < numbers.length) {
-              filters[currentKey]["value"] = parseFloat(numbers[numIdx]);
+              filters[currentKey]["value"] = {
+                operation: op,
+                value: parseFloat(numbers[numIdx]),
+              };
               numIdx += 1;
             } else {
               filters[currentKey]["value"] = null;
@@ -200,9 +203,10 @@ const TextVoice = ({
         }
       }
     });
-
+  
     return filters;
   }
+  
   const sendPredict = (result) => {
     // Clear any existing timeout (reset the debounce)
     if (timeoutId) {
@@ -246,6 +250,7 @@ const TextVoice = ({
 
           // Generate the key filter object from the final sentence (filteredData)
           setFilters(generateKeyFilter(finalSentence, simplified));
+          console.log(generateKeyFilter(finalSentence, simplified))
         })
         .catch((error) => console.error("Error sending message:", error));
     }, 1000);

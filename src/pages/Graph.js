@@ -316,7 +316,7 @@ function Graph() {
     if (!colName || !columnInfo[colName]) return null;
     
     const info = columnInfo[colName];
-    
+    console.log(columnInfo)
     return (
       <div className="column-filter" key={colName} style={{
         border: "1px solid #ddd", 

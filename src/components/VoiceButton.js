@@ -121,7 +121,7 @@ const VoiceButton = ({ toggleMainTextDiv,selectionIndex,setSelectionIndex,page,c
       {isExpanded && (
         <div>
           {error ? <p>{error}</p> : <TextVoice text={result} onInput={voiceTimer} selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex} page={page} columnInfo={columnInfo} setActiveFilterColumns={setActiveFilterColumns}
-        filters={setFilters}/>}
+        setFilters={setFilters}/>}
         </div>
       )}
     </section>
