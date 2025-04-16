@@ -50,7 +50,6 @@ const TextVoice = ({
       })
       .catch((error) => console.error("Error sending message:", error));
   };
-  let timeoutId = null;
   function wordToIndex(word) {
     const mapping = {
       one: 0,
@@ -207,16 +206,18 @@ const TextVoice = ({
     return filters;
   }
   
+  let timeoutId; // this needs to be in a scope that persists between calls
+
   const sendPredict = (result) => {
     // Clear any existing timeout (reset the debounce)
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
-
-    // Set a new timeout
+  
+    // Set a new timeout that will fire after 1 second of inactivity
     timeoutId = setTimeout(() => {
       const simplified = {};
-
+  
       // Create the simplified object for keys
       for (const [key, value] of Object.entries(columnInfo)) {
         simplified[key] = {
@@ -224,10 +225,10 @@ const TextVoice = ({
           uniqueValues: value.uniqueValues,
         };
       }
-
+  
       console.log(simplified);
       console.log(JSON.stringify(simplified, undefined, 2));
-
+  
       // Make the POST request
       fetch("http://localhost:8000/filter_sentence", {
         method: "POST",
@@ -242,19 +243,20 @@ const TextVoice = ({
             data.target_string
           );
           console.log("Final Sentence:", finalSentence);
-
+  
           // Generate an ordered array of target keys based on sentence tokens (activeFilterColumns)
           setActiveFilterColumns(
             generateKeyValueArray(finalSentence, simplified)
           );
-
+  
           // Generate the key filter object from the final sentence (filteredData)
           setFilters(generateKeyFilter(finalSentence, simplified));
-          console.log(generateKeyFilter(finalSentence, simplified))
+          console.log(generateKeyFilter(finalSentence, simplified));
         })
         .catch((error) => console.error("Error sending message:", error));
     }, 1000);
   };
+  
   const selectSuggestion = (suggestion) => {
     setInputValue(suggestion);
     if (onInput) {

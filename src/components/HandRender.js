@@ -4,11 +4,19 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 const HandRender = () => {
+  
   const rendererContainer = useRef(null);
   const [loadedMeshHand, setLoadedMeshHand] = useState(null);
   const [loadedMeshMouse, setLoadedMeshMouse] = useState(null);
 
   useEffect(() => {
+
+      if (rendererContainer.current) {
+    while (rendererContainer.current.firstChild) {
+      rendererContainer.current.removeChild(rendererContainer.current.firstChild);
+    }
+  }
+
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     const canvasWidth = 280;
@@ -180,7 +188,7 @@ const HandRender = () => {
     };
   }, []);
 
-  return <div ref={rendererContainer} className="renderer-container" />;
+  return <div ref={rendererContainer} className="renderer-container"  />;
 };
 
 export default HandRender;

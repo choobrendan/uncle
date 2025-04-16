@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
 const FaceRender = ({ X, Y }) => {
+  
   const rendererContainer = useRef(null);
   const [loadedMesh, setLoadedMesh] = useState(null);
 
@@ -18,7 +19,13 @@ const FaceRender = ({ X, Y }) => {
   };
 
   useEffect(() => {
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    if (rendererContainer.current) {
+      while (rendererContainer.current.firstChild) {
+        rendererContainer.current.removeChild(rendererContainer.current.firstChild);
+      }
+    }
+    const renderer = new THREE.
+    WebGLRenderer({ antialias: true, alpha: true });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     const canvasWidth = 320;
     const canvasHeight = window.innerHeight;

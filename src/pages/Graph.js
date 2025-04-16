@@ -340,14 +340,14 @@ function Graph() {
           value1: info.min || 0,
           value2: info.max || 0
         };
-        
+      
         return (
-          <div className="filter-controls" style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
-            <span style={{width:"107px", textAlign:"center",color:"black"}}>{colName}</span>
+          <div className="filter-controls" style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+            <span style={{ width: "107px", textAlign: "center", color: "black" }}>{colName}</span>
             <select 
               value={numInput.operation}
               onChange={(e) => handleNumericOperationChange(colName, e.target.value)}
-              style={{marginRight: "10px"}}
+              style={{ marginRight: "10px" }}
             >
               <option value="greaterThan">Greater than</option>
               <option value="lessThan">Less than</option>
@@ -355,64 +355,57 @@ function Graph() {
               <option value="between">Between</option>
               <option value="notBetween">Not between</option>
             </select>
-            
-            <div className="input-group" style={{display: "flex", alignItems: "center"}}>
+      
+            <div className="input-group" style={{ display: "flex", alignItems: "center" }}>
               <input
                 type="number"
                 value={numInput.value1}
                 onChange={(e) => handleNumericInputChange(colName, 'value1', e.target.value)}
-                min={info.min}
-                max={info.max}
                 step="any"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') applyNumericFilter(colName);
                 }}
-                style={{width: "80px", marginRight: "5px"}}
+                style={{ width: "80px", marginRight: "5px" }}
               />
-              
+      
               {(numInput.operation === 'between' || numInput.operation === 'notBetween') && (
                 <>
-                  <span style={{margin: "0 5px"}}>and</span>
+                  <span style={{ margin: "0 5px" }}>and</span>
                   <input
                     type="number"
                     value={numInput.value2}
                     onChange={(e) => handleNumericInputChange(colName, 'value2', e.target.value)}
-                    min={info.min}
-                    max={info.max}
                     step="any"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') applyNumericFilter(colName);
                     }}
-                    style={{width: "80px", marginRight: "5px"}}
+                    style={{ width: "80px", marginRight: "5px" }}
                   />
                 </>
               )}
             </div>
-            
+      
             <button 
               onClick={() => applyNumericFilter(colName)}
-              style={{marginRight: "5px"}}
+              style={{ marginRight: "5px" }}
             >
               Apply
             </button>
-
-            <button 
- onClick={() => removeColumnFilter(colName)}
-            >
+      
+            <button onClick={() => removeColumnFilter(colName)}>
               Remove
             </button>
-
+      
             {filters[colName] && (
-              <div style={{marginLeft: "10px", fontStyle: "italic"}}>
-                Active filter: {filters[colName].value.operation === 'between' || filters[colName].value.operation === 'notBetween' ? 
-                  `${filters[colName].value.operation} ${filters[colName].value.value[0]} and ${filters[colName].value.value[1]}` : 
-                  `${filters[colName].value.operation} ${filters[colName].value.value}`
-                }
+              <div style={{ marginLeft: "10px", fontStyle: "italic" }}>
+                Active filter: {filters[colName].value.operation === 'between' ||
+                filters[colName].value.operation === 'notBetween'
+                  ? `${filters[colName].value.operation} ${filters[colName].value.value[0]} and ${filters[colName].value.value[1]}`
+                  : `${filters[colName].value.operation} ${filters[colName].value.value}`}
               </div>
             )}
           </div>
         );
-        
       case 'date':
         return (
           <div className="date-filter" style={{display: "flex", alignItems: "center", marginTop: "10px"}}>
