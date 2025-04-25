@@ -87,13 +87,13 @@ class Filter(BaseModel):
     keys: Dict[str, Feature]
 
 
-num_layers = 6
-d_model = 384
-dff = 512
+num_layers = 4
+d_model = 128
+dff = 256
 num_heads = 4
 input_vocab_size = tfds.deprecated.text.SubwordTextEncoder.load_from_file("./tokenizer_q").vocab_size + 2
 target_vocab_size = tfds.deprecated.text.SubwordTextEncoder.load_from_file("./tokenizer_a").vocab_size + 2
-dropout_rate = 0.2
+dropout_rate = 0.1
 tokenizer_a=tfds.deprecated.text.SubwordTextEncoder.load_from_file("./tokenizer_a")
 tokenizer_q=tfds.deprecated.text.SubwordTextEncoder.load_from_file("./tokenizer_q")
 
