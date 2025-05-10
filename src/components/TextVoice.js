@@ -11,7 +11,7 @@ const TextVoice = ({
   page,
   columnInfo,
   setActiveFilterColumns,
-  setFilters,
+  setFilters,simplify
 }) => {
   const [inputValue, setInputValue] = useState(text || "");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -226,7 +226,7 @@ const TextVoice = ({
         };
       }
   
-      console.log(simplified);
+
       console.log(JSON.stringify(simplified, undefined, 2));
   
       // Make the POST request
@@ -285,6 +285,7 @@ const TextVoice = ({
   return (
     <div className="neon-container">
       <TextInput
+      simplify={simplify}
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);

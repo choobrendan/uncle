@@ -17,7 +17,7 @@ const HandRender = () => {
     }
   }
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true,powerPreference: 'low-power', });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     const canvasWidth = 280;
     const canvasHeight = window.innerHeight;

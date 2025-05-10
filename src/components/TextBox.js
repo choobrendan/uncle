@@ -8,6 +8,7 @@ const TextBox = ({
   selectionIndex,
   text,
   onInput,
+  simplify,
   isApiCallDisabled = false, // New prop to control whether API call happens
 }) => {
   const [inputValue, setInputValue] = useState(text || ''); // Initialize with the text prop
@@ -79,8 +80,11 @@ const TextBox = ({
   }, [text]);
 
   return (
+
+    
     <div className="neon-container">
       <TextInput
+      simplify={simplify}
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);
@@ -89,7 +93,7 @@ const TextBox = ({
           }
         }}
         onFocus={() => setShowDropdown(true)}
-        onBlur={onBlur}
+        onBlur={onBlur} 
         placeholder="Type a prompt..."
       />
 

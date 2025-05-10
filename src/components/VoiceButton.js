@@ -3,7 +3,7 @@ import { useSpeechRecognition } from '../composables/useSpeechRecognition';
 import './VoiceButton.css';
 import TextVoice from './TextVoice';
 
-const VoiceButton = ({ toggleMainTextDiv,selectionIndex,setSelectionIndex,page,columnInfo,setActiveFilterColumns,setFilters}) => {
+const VoiceButton = ({ toggleMainTextDiv,selectionIndex,setSelectionIndex,page,columnInfo,setActiveFilterColumns,setFilters,simplify}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [result, setResult] = useState('');
   const [error, setError] = useState('');
@@ -121,7 +121,7 @@ const VoiceButton = ({ toggleMainTextDiv,selectionIndex,setSelectionIndex,page,c
       {isExpanded && (
         <div>
           {error ? <p>{error}</p> : <TextVoice text={result} onInput={voiceTimer} selectionIndex={selectionIndex} setSelectionIndex={setSelectionIndex} page={page} columnInfo={columnInfo} setActiveFilterColumns={setActiveFilterColumns}
-        setFilters={setFilters}/>}
+        setFilters={setFilters} simplify={simplify}/> }
         </div>
       )}
     </section>
