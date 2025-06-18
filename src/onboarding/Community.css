@@ -236,11 +236,17 @@ input{
 
 /* Task Completed */
 .task-completed {
-  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-  border-radius: 1rem;
-  padding: 2rem;
-  text-align: center;
-  border-left: 4px solid var(--success);
+
+    height: 40%;
+    width: 40%;
+    position: fixed;
+    border-radius: 10px;
+    background-color: #fcf7f7;
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    box-shadow: 0px 0px 20px 3px #00000045;
+
 }
 
 /* Utility Classes */
@@ -277,3 +283,15 @@ input{
     width: 100%;
   }
 }
+
+
+.task-completed{
+
+padding: 20px;
+font-family: "Oxanium";
+text-align: center;
+display: flex;
+flex-direction: row;
+align-items: center;
+}
+

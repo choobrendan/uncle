@@ -19,8 +19,8 @@ function SignIn() {
     simplify,
     setSimplify,
     setIsUserLoggedIn,
+    font,
   } = useOutletContext();
-
 
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -197,14 +197,14 @@ function SignIn() {
   return (
     <div
       className="signInPage"
-      style={{ filter: `brightness(${1 * brightnessIndex}` }}
+      style={{ filter: `brightness(${1 * brightnessIndex}`, fontFamily: font }}
     >
       <div className="signInCard">
         <h2 style={{ fontSize: `${36 * textSizeModifier}px` }}>
           Log In to Your Account
         </h2>
 
-        <p style={{ fontSize: `${18 * textSizeModifier}px` }}>
+        <p style={{ fontSize: `${18 * textSizeModifier}px`, margin: "20px" }}>
           Ensure the changes made to your website are remembered across
           different devices!
         </p>
@@ -225,6 +225,7 @@ function SignIn() {
             </label>
             <TextInput
               value={email}
+              font={font}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email..."
               style={{ fontSize: `${16 * textSizeModifier}px` }}
@@ -252,6 +253,7 @@ function SignIn() {
               width: "100%",
               marginTop: "10px",
               cursor: "pointer",
+              backgroundColor: "black",
             }}
           >
             Sign In

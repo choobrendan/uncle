@@ -2,53 +2,25 @@ import React, { useState, useEffect, useRef } from "react";
 import Basketball from "./Basketball";
 import "./Onboarding.css";
 import CommunityCenter from "./Community";
-import Survey from "./Survey";
 import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = "https://hgatxkpmrskbdqigenav.supabase.co";
 const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 const Onboarding = () => {
-  const [latestData, setLatestData] = useState({
-    timeseries: [],
-    question1: "",
-    question2: "",
-    question3: "",
-    question4: "",
-    question5: "",
-    question6: "",
-    question7: "",
-    question8: "",
-  });
-
-  const dataRef = useRef({
-    timeseries: [],
-    question1: "",
-    question2: "",
-    question3: "",
-    question4: "",
-    question5: "",
-    question6: "",
-    question7: "",
-    question8: "",
-  });
-
   const mousePosition = useRef({ x: 0, y: 0 });
   const isMouseDown = useRef(false);
   const lastHoverElement = useRef(null);
-  const [nextGame, setNextGame] = useState(0
-
-  );
+  const [nextGame, setNextGame] = useState(0);
   const eyeMovement = useRef({ x: null, y: null });
   const lastScrollPosition = useRef(0);
   const scrollDirection = useRef("none");
 
   const [responses, setResponses] = useState({});
 
-
   // useEffect(() => {
   //   const initializeWebGazer = async () => {
   //     console.log("started");
-  
+
   //     const webgazer = await window.webgazer
   //       .setGazeListener((data) => {
   //         if (data) {
@@ -59,31 +31,31 @@ const Onboarding = () => {
   //         }
   //       })
   //       .begin();
-  
+
   //     webgazer.showPredictionPoints(false);
-  
+
   //     // Use requestIdleCallback to run gaze tracking in idle time
   //     const trackGaze = () => {
   //       webgazer.getCurrentPrediction();
   //     };
-  
+
   //     if ('requestIdleCallback' in window) {
   //       requestIdleCallback(trackGaze);
   //     } else {
   //       setInterval(trackGaze, 50); // fallback for unsupported browsers
   //     }
   //   };
-  
+
   //   initializeWebGazer();
-  
+
   //   return () => {
 
   //   };
   // }, []);
 
   const lastScrollTime = useRef(Date.now());
-  
-useEffect(() => {
+
+  useEffect(() => {
     const handleMouseMove = (e) => {
       mousePosition.current = { x: e.clientX, y: e.clientY };
       lastHoverElement.current = document.elementFromPoint(
@@ -148,11 +120,8 @@ useEffect(() => {
         eyeX: eyeMovement.current.x,
         eyeY: eyeMovement.current.y,
         scrollDirection: scrollDirection.current,
-        currentState: nextGame
+        currentState: nextGame,
       };
-
-      dataRef.current.timeseries = [...dataRef.current.timeseries, newEntry];
-      setLatestData({ ...dataRef.current });
     }, 50);
 
     return () => {
@@ -225,91 +194,10 @@ useEffect(() => {
     return "container";
   };
 
-  const handleDownload = () => {
-    const jsonString = JSON.stringify(dataRef.current, null, 2);
-    const blob = new Blob([jsonString], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `interaction-data-${new Date().toISOString()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  const overwriteTable = async () => {
-    try {
-      for (let key in responses) {
-        if (dataRef.current.hasOwnProperty(key)) {
-          console.log(dataRef.current);
-          dataRef.current[key] = responses[key];
-        }
-      }
-      console.log(dataRef.current);
-      const { timeseries, ...testDataFields } = dataRef.current;
-
-      const { data: dataDataFetch, error: errorDataFetch } = await supabase
-        .from("testData")
-        .select(); // Using supabase instance directly, no need for 'await supabase()'
-
-      console.log(dataDataFetch, "dataData");
-      if (errorDataFetch) {
-        console.error("Error fetching testData:", errorDataFetch);
-        return { data: null, error: errorDataFetch };
-      }
-
-      let testDataId = dataDataFetch?.slice(-1)[0]?.id + 1 ?? 0;
-      if (!testDataId) {
-        testDataId = 0;
-      }
-
-      // Insert or update the testData table
-      const { data: dataData, error: errorData } = await supabase
-        .from("testData")
-        .upsert({ ...testDataFields, id: testDataId });
-
-      if (errorData) {
-        console.error("Error inserting testData:", errorData);
-        return { data: null, error: errorData };
-      }
-
-      console.log("Inserted testDataId:", testDataId);
-
-      // Handle timeseries data
-      const { data: dataTime, error: errorTime } = await supabase
-        .from("testTime")
-        .upsert(
-          timeseries.map((item) => ({
-            ...item,
-            testDataId: testDataId,
-          }))
-        );
-
-      if (errorTime) {
-        console.error("Error inserting testTime:", errorTime);
-        return { data: null, error: errorTime };
-      }
-
-      return { dataData, errorData, dataTime, errorTime };
-    } catch (error) {
-      console.error("Unexpected error:", error);
-      return { data: null, error };
-    }
-  };
-
   return (
     <div className="app-container">
-
       {nextGame === 0 && <Basketball setNextGame={setNextGame} />}
       {nextGame === 1 && <CommunityCenter setNextGame={setNextGame} />}
-      {nextGame === 2 && (
-        <Survey
-          responses={responses}
-          setResponses={setResponses}
-          setNextGame={setNextGame}
-        />
-      )}
     </div>
   );
 };

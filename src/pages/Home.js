@@ -17,6 +17,7 @@ function Home() {
     simplify,
     isUserLoggedIn,
     setIsUserLoggedIn,
+    font,
   } = useOutletContext();
 
   // State variables
@@ -237,7 +238,11 @@ function Home() {
   // Render original version
   return (
     <div
-      style={{ alignItems: "center", justifyContent: "center" }}
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: font,
+      }}
       onMouseMove={handleMouseMove}
     >
       {simplify && (
@@ -279,6 +284,7 @@ function Home() {
             setSelectionIndex={setSelectionIndex}
             simplify={simplify}
             selectionIndex={selectionIndex}
+            font={font}
           />
         </div>
       )}
@@ -288,7 +294,7 @@ function Home() {
             <div className="how-would-you">
               <p
                 style={{
-                  fontFamily: "Oxanium",
+                  fontFamily: font,
                   fontWeight: 200,
                   fontSize: `${36 * textSizeModifier}px`,
                 }}
@@ -312,15 +318,116 @@ function Home() {
             <div className="backdrop-filter">
               <div className="flip-card-inner">
                 <div className="flip-card-front">
-                  <div>
-                    <p>Front</p>
+                  <div style={{ margin: "20px" }}>
+                    <p style={{ fontSize: "36px" }}>
+                      Struggling to use a Website?
+                    </p>
+                    <img
+                      style={{
+                        maxWidth: "80%",
+                        minWidth: "300px",
+                        padding: "20px",
+                        paddingLeft: "40px",
+                        paddingRight: "40px",
+                      }}
+                      src="output-onlinepngtools.png"
+                    ></img>
+                    <p style={{ fontSize: "20px", margin: "0px" }}>
+                      Aging related issues may cause the elderly to be less
+                      comfortable in using websites. How can we solve it?
+                    </p>
                   </div>
                 </div>
                 <div className="flip-card-back">
-                  <div>
-                    <h1>John Doe</h1>
-                    <p>Architect & Engineer</p>
-                    <p>We love that guy</p>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "20px",
+                      margin: "40px",
+                      height: "calc(100% - 80px)", // Subtract total margin (40px top + 40px bottom)
+                      overflow: "hidden",
+                      boxSizing: "border-box",
+                    }}
+                  >
+                    {/* First section */}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection:
+                          window.innerWidth > 768 ? "row" : "column",
+                        alignItems: "center",
+                        gap: "20px",
+                        minHeight: "0", // Allows flex item to shrink
+                      }}
+                    >
+                      <img
+                        style={{
+                          width: "100%",
+                          maxWidth: window.innerWidth > 768 ? "50%" : "200px",
+                          minWidth: "150px",
+                          height: "auto",
+                          objectFit: "contain",
+                          flexShrink: 1,
+                        }}
+                        src="output-onlinepngtools (1).png"
+                        alt="AI Detection Algorithm"
+                      />
+                      <p
+                        style={{
+                          fontSize: "clamp(14px, 2.5vw, 20px)",
+                          margin: "0",
+                          textAlign: "justify",
+                          lineHeight: "1.4",
+                          flex: 1,
+                          minWidth: "0", // Allows text to wrap properly
+                        }}
+                      >
+                        Using a self made AI algorithm, we can automatically
+                        detect user's issues based on their input to the
+                        application. We would then modify the website to allow
+                        automatic UI adjustments.
+                      </p>
+                    </div>
+
+                    {/* Second section */}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection:
+                          window.innerWidth > 768 ? "row-reverse" : "column",
+                        alignItems: "center",
+                        gap: "20px",
+                        minHeight: "0", // Allows flex item to shrink
+                      }}
+                    >
+                      <img
+                        style={{
+                          width: "100%",
+                          maxWidth: window.innerWidth > 768 ? "50%" : "200px",
+                          minWidth: "150px",
+                          height: "auto",
+                          objectFit: "contain",
+                          flexShrink: 1,
+                        }}
+                        src="output-onlinepngtools (2).png"
+                        alt="Manual Adjustment Interface"
+                      />
+                      <p
+                        style={{
+                          fontSize: "clamp(14px, 2.5vw, 20px)",
+                          margin: "0",
+                          textAlign: "justify",
+                          lineHeight: "1.4",
+                          flex: 1,
+                          minWidth: "0", // Allows text to wrap properly
+                        }}
+                      >
+                        Or, if you want to adjust things manually, you can type
+                        in instructions or ways to work on modifying the website
+                        based on your specific needs.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -331,7 +438,7 @@ function Home() {
             <div className="how-would-you">
               <p
                 style={{
-                  fontFamily: "Oxanium",
+                  fontFamily: font,
                   fontWeight: 200,
                   fontSize: `${36 * textSizeModifier}px`,
                 }}
@@ -343,7 +450,7 @@ function Home() {
             <div className="customised">
               <p
                 style={{
-                  fontFamily: "Oxanium",
+                  fontFamily: font,
                   fontWeight: 200,
                   fontSize: `${36 * textSizeModifier}px`,
                 }}
@@ -365,6 +472,7 @@ function Home() {
         simplify={simplify}
         setSelectionIndex={setSelectionIndex}
         selectionIndex={selectionIndex}
+        font={font}
       />
     </div>
   );

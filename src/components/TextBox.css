@@ -3,7 +3,7 @@
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
-    font-family: 'Oxanium';
+    /* font-family: 'Oxanium'; */
     
   }
   
@@ -13,7 +13,7 @@
   }
   
   input{
-    font-family: 'Oxanium';
+    /* font-family: 'Oxanium'; */
 
   }
   .neon-input {

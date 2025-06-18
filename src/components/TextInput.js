@@ -8,12 +8,14 @@ const TextInput = ({
   onBlur,
   placeholder,
   simplify,
+  font,
 }) => {
   return (
     <div>
       {!simplify && (
         <div className="neon-input-wrapper">
           <input
+            style={{ fontFamily: font }}
             type="text"
             value={value}
             onChange={onChange}

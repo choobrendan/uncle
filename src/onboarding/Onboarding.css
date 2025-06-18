@@ -6,7 +6,31 @@
   padding: 16px;
   font-family: 'Poppins', sans-serif;
 }
+p.onboarding {
+color: black;
+text-shadow: none;
 
+
+}
+h2.onboarding{
+color: black;
+font-weight: bold;
+}
+h3.onboarding{
+  color:#1976d2;
+}
+input:not([type]), input[type="text"].onboarding{
+
+margin-right: 10px;
+font-family: 'Poppins', sans-serif;
+padding: 0.75rem 1rem;
+border: 1px solid #cbd5e1;
+border-radius: 0.75rem;
+transition: all 0.3s ease;
+
+
+
+}
 .title {
   font-size: 1.5rem;
   font-weight: bold;

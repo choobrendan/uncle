@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import TextInput from './TextInput';
-import './TextBox.css';
+import React, { useState, useEffect } from "react";
+import TextInput from "./TextInput";
+import "./TextBox.css";
 
 const TextBox = ({
   suggestions,
@@ -9,9 +9,10 @@ const TextBox = ({
   text,
   onInput,
   simplify,
+  font,
   isApiCallDisabled = false, // New prop to control whether API call happens
 }) => {
-  const [inputValue, setInputValue] = useState(text || ''); // Initialize with the text prop
+  const [inputValue, setInputValue] = useState(text || ""); // Initialize with the text prop
   const [showDropdown, setShowDropdown] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
@@ -26,9 +27,9 @@ const TextBox = ({
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [showDropdown, filteredSuggestions, selectionIndex]);
 
@@ -36,16 +37,16 @@ const TextBox = ({
     if (isApiCallDisabled) return; // Skip the API call if it's disabled
 
     console.log(inputValue);
-    fetch('http://localhost:8000/send-message', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch("http://localhost:8000/send-message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: inputValue }),
     })
       .then((response) => response.json())
       .then((data) => {
         setFilteredSuggestions(data);
       })
-      .catch((error) => console.error('Error sending message:', error));
+      .catch((error) => console.error("Error sending message:", error));
   };
 
   const selectSuggestion = (suggestion) => {
@@ -80,11 +81,10 @@ const TextBox = ({
   }, [text]);
 
   return (
-
-    
     <div className="neon-container">
       <TextInput
-      simplify={simplify}
+        simplify={simplify}
+        font={font}
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);
@@ -93,7 +93,7 @@ const TextBox = ({
           }
         }}
         onFocus={() => setShowDropdown(true)}
-        onBlur={onBlur} 
+        onBlur={onBlur}
         placeholder="Type a prompt..."
       />
 
@@ -104,7 +104,9 @@ const TextBox = ({
               key={index}
               onMouseDown={() => selectSuggestion(suggestion)}
               onMouseEnter={() => handleMouseEnter(index)}
-              className={`neon-suggestion ${hoverIndex === index ? 'active' : ''}`}
+              className={`neon-suggestion ${
+                hoverIndex === index ? "active" : ""
+              }`}
             >
               {suggestion}
             </div>

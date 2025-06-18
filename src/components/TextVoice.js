@@ -11,7 +11,9 @@ const TextVoice = ({
   page,
   columnInfo,
   setActiveFilterColumns,
-  setFilters,simplify
+  setFilters,
+  simplify,
+  font,
 }) => {
   const [inputValue, setInputValue] = useState(text || "");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -124,7 +126,7 @@ const TextVoice = ({
    */
   function generateKeyFilter(sentence, simplified) {
     const filters = {};
-  
+
     // Regular expression to extract tokens enclosed in angle brackets, e.g. "target three", "between", etc.
     const tagPattern = /<([^>]+)>/g;
     const tags = [];
@@ -132,7 +134,7 @@ const TextVoice = ({
     while ((match = tagPattern.exec(sentence)) !== null) {
       tags.push(match[1]);
     }
-  
+
     // Extract all number sequences (as strings) using a regular expression.
     // This supports integers and decimals.
     const numberPattern = /\b\d+(?:\.\d+)?\b/g;
@@ -140,7 +142,7 @@ const TextVoice = ({
     while ((match = numberPattern.exec(sentence)) !== null) {
       numbers.push(match[0]);
     }
-  
+
     // Mapping operation tokens to desired operation strings.
     const opMapping = {
       between: "between",
@@ -148,17 +150,17 @@ const TextVoice = ({
       higher: "greaterThan",
       equals: "equals",
     };
-  
+
     let numIdx = 0; // pointer for numbers array
     let currentKey = null;
     const allKeys = Object.keys(simplified);
-  
+
     tags.forEach((tag) => {
       const parts = tag.split(/\s+/);
       if (parts.length === 0) return;
-  
+
       const tokenType = parts[0].toLowerCase();
-  
+
       if (tokenType === "target") {
         // Expect format: target <numberWord>
         if (parts.length > 1) {
@@ -202,10 +204,10 @@ const TextVoice = ({
         }
       }
     });
-  
+
     return filters;
   }
-  
+
   let timeoutId; // this needs to be in a scope that persists between calls
 
   const sendPredict = (result) => {
@@ -213,11 +215,11 @@ const TextVoice = ({
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
-  
+
     // Set a new timeout that will fire after 1 second of inactivity
     timeoutId = setTimeout(() => {
       const simplified = {};
-  
+
       // Create the simplified object for keys
       for (const [key, value] of Object.entries(columnInfo)) {
         simplified[key] = {
@@ -225,10 +227,10 @@ const TextVoice = ({
           uniqueValues: value.uniqueValues,
         };
       }
-  
+      //
 
-      console.log(JSON.stringify(simplified, undefined, 2));
-  
+      console.log({ keys: simplified, message: result });
+
       // Make the POST request
       fetch("http://localhost:8000/filter_sentence", {
         method: "POST",
@@ -243,12 +245,12 @@ const TextVoice = ({
             data.target_string
           );
           console.log("Final Sentence:", finalSentence);
-  
+
           // Generate an ordered array of target keys based on sentence tokens (activeFilterColumns)
           setActiveFilterColumns(
             generateKeyValueArray(finalSentence, simplified)
           );
-  
+
           // Generate the key filter object from the final sentence (filteredData)
           setFilters(generateKeyFilter(finalSentence, simplified));
           console.log(generateKeyFilter(finalSentence, simplified));
@@ -256,7 +258,7 @@ const TextVoice = ({
         .catch((error) => console.error("Error sending message:", error));
     }, 1000);
   };
-  
+
   const selectSuggestion = (suggestion) => {
     setInputValue(suggestion);
     if (onInput) {
@@ -285,8 +287,9 @@ const TextVoice = ({
   return (
     <div className="neon-container">
       <TextInput
-      simplify={simplify}
+        simplify={simplify}
         value={inputValue}
+        font={font}
         onChange={(e) => {
           setInputValue(e.target.value);
         }}
@@ -294,9 +297,17 @@ const TextVoice = ({
       />
 
       {filteredSuggestions.length > 0 && (
-        <div className="suggestion-buttons">
-          {filteredSuggestions.slice(0, 6).map((suggestion, index) => (
+        <div
+          className="suggestion-buttons"
+          style={{ display: "flex", flexDirection: "column" }}
+        >
+          {filteredSuggestions.slice(0, 4).map((suggestion, index) => (
             <button
+              style={{
+                fontFamily: font,
+                fontSize: "20px",
+                margin: "5px",
+              }}
               key={suggestion.id}
               className={`suggestion-button ${
                 selectionIndex === index ? "active" : ""

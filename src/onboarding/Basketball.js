@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import "./Onboarding"; // Import the CSS file
+import "./Onboarding.css"; // Import the CSS file
 
-const Basketball = ({setNextGame}) => {
+const Basketball = ({ setNextGame }) => {
   const [level, setLevel] = useState(1);
   const [ballPosition, setBallPosition] = useState({ x: 100, y: 100 });
   const [hoopPosition, setHoopPosition] = useState({ x: 700, y: 240 });
@@ -52,45 +52,45 @@ const Basketball = ({setNextGame}) => {
       },
       netMovement: false,
     },
-    {
-      startBall: {
-        x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
-        y: Math.random() * (floorHeight - 2 * ballRadius) + ballRadius,
-      },
-      hoopPos: {
-        x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
-        y: Math.random() * (floorHeight - 100) + 50,
-      },
-      netMovement: true,
-      netMoveSpeed: 0.5,
-      moveDistance: 50,
-    },
-    {
-      startBall: {
-        x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
-        y: Math.random() * (floorHeight - 2 * ballRadius) + ballRadius,
-      },
-      hoopPos: {
-        x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
-        y: Math.random() * (floorHeight - 100) + 50,
-      },
-      netMovement: true,
-      netMoveSpeed: 0.3,
-      moveDistance: 120,
-    },
-    {
-      startBall: {
-        x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
-        y: Math.random() * (floorHeight - 2 * ballRadius) + ballRadius,
-      },
-      hoopPos: {
-        x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
-        y: Math.random() * (floorHeight - 100) + 50,
-      },
-      netMovement: true,
-      netMoveSpeed: 0.8,
-      moveDistance: 140,
-    },
+    // {
+    //   startBall: {
+    //     x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
+    //     y: Math.random() * (floorHeight - 2 * ballRadius) + ballRadius,
+    //   },
+    //   hoopPos: {
+    //     x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
+    //     y: Math.random() * (floorHeight - 100) + 50,
+    //   },
+    //   netMovement: true,
+    //   netMoveSpeed: 0.5,
+    //   moveDistance: 50,
+    // },
+    // {
+    //   startBall: {
+    //     x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
+    //     y: Math.random() * (floorHeight - 2 * ballRadius) + ballRadius,
+    //   },
+    //   hoopPos: {
+    //     x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
+    //     y: Math.random() * (floorHeight - 100) + 50,
+    //   },
+    //   netMovement: true,
+    //   netMoveSpeed: 0.3,
+    //   moveDistance: 120,
+    // },
+    // {
+    //   startBall: {
+    //     x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
+    //     y: Math.random() * (floorHeight - 2 * ballRadius) + ballRadius,
+    //   },
+    //   hoopPos: {
+    //     x: Math.random() * (courtWidth - 2 * ballRadius) + ballRadius,
+    //     y: Math.random() * (floorHeight - 100) + 50,
+    //   },
+    //   netMovement: true,
+    //   netMoveSpeed: 0.8,
+    //   moveDistance: 140,
+    // },
   ];
   useEffect(() => {
     const config = levelConfigs[level - 1];
@@ -124,14 +124,13 @@ const Basketball = ({setNextGame}) => {
   };
   const handleProceed = () => {
     if (scored) {
-
-      nextLevel();     // Advance to the next level
+      nextLevel(); // Advance to the next level
     }
-    if (scored && level===5){
-      setNextGame(1);  // Proceed to the next game
+    if (scored && level === 2) {
+      setNextGame(1); // Proceed to the next game
     }
   };
-  
+
   const nextLevel = () => {
     if (level < levelConfigs.length) {
       setLevel((prev) => prev + 1);
@@ -139,7 +138,6 @@ const Basketball = ({setNextGame}) => {
       setMessage("Congratulations! You've completed all levels!");
     }
   };
-  
 
   const resetGame = () => {
     if (scored) {
@@ -152,7 +150,6 @@ const Basketball = ({setNextGame}) => {
       setScored(false);
       setMessage("");
     }
-
   };
 
   const handleMouseDown = (e) => {
@@ -217,7 +214,7 @@ const Basketball = ({setNextGame}) => {
 
     // Net movement for levels with moving nets
     const currentConfig = levelConfigs[level - 1];
-    
+
     if (currentConfig.netMovement) {
       const newNetOffset =
         Math.sin(time * 0.005 * currentConfig.netMoveSpeed) * 200;
@@ -257,12 +254,11 @@ const Basketball = ({setNextGame}) => {
   };
 
   useEffect(() => {
-    if(level===6){
-        setNextGame(1);
+    if (level === 6) {
+      setNextGame(1);
     }
     requestRef.current = requestAnimationFrame(animatePhysics);
     return () => cancelAnimationFrame(requestRef.current);
-
   }, [isDropped, isDragging, velocity, ballPosition, level]);
   return (
     <div className="container">
@@ -318,15 +314,14 @@ style={{
       </div>
       {message && <div className="message">{message}</div>}
       <div className="button-container">
-  {isDropped ? (
-    <button onClick={handleProceed} className="button">
-      {scored ? `Proceed` : `Reset`}
-    </button>
-  ) : (
-    <p>Drag the ball and release it to shoot!</p>
-  )}
-</div>
-
+        {isDropped ? (
+          <button onClick={handleProceed} className="button">
+            {scored ? `Proceed` : `Reset`}
+          </button>
+        ) : (
+          <p class="onboarding">Drag the ball and release it to shoot!</p>
+        )}
+      </div>
     </div>
   );
 };

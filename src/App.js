@@ -7,10 +7,12 @@ import localforage from "localforage";
 const supabaseUrl = "https://hgatxkpmrskbdqigenav.supabase.co";
 const supabaseKey = process.env.REACT_APP_SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
-
 function App() {
+  const [issueArray, setissueArray] = useState([]);
   const [latestData, setLatestData] = useState([]);
+  const fetchCounterRef = useRef(0);
 
+  const [issue, setIssue] = useState(0);
   const dataRef = useRef({
     timeseries: [],
     question1: "",
@@ -26,8 +28,9 @@ function App() {
   const navigate = useNavigate();
   const [gazeX, setGazeX] = useState(0);
   const [gazeY, setGazeY] = useState(0);
-  // Initialize isUserLoggedIn from local storage.
-  // If it's falsy, we'll work in "guest" mode.
+  const [fontNum, setFontNum] = useState(0);
+  const [showIssueBox, setShowIssueBox] = useState(1);
+  const [font, setFont] = useState("Oxanium");
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(() => {
     return localStorage.getItem("isUserLoggedIn") || "";
   });
@@ -46,77 +49,180 @@ function App() {
   const lastScrollPosition = useRef(0);
   const scrollDirection = useRef("none");
   const [responses, setResponses] = useState({});
-
+  const issueTimerRef = useRef(0);
   // -- Updated WebGazer setup and gaze listener --------------------------------
 
-  useEffect(() => {
-    const eyeListener = (data, clock) => {
-      if (!lastTime.current) {
-        lastTime.current = clock;
-      }
+  // useEffect(() => {
+  //   const eyeListener = (data, clock) => {
+  //     if (!lastTime.current) {
+  //       lastTime.current = clock;
+  //     }
 
-      const duration = clock - lastTime.current;
-      const entry = {
-        time: new Date().toISOString(),
-        positionX:
-          lastGaze.current && typeof lastGaze.current.x === "number"
-            ? Math.floor(lastGaze.current.x)
-            : -1,
+  //     const duration = clock - lastTime.current;
+  //     const entry = {
+  //       time: new Date().toISOString(),
+  //       positionX:
+  //         lastGaze.current && typeof lastGaze.current.x === "number"
+  //           ? Math.floor(lastGaze.current.x)
+  //           : -1,
 
-        positionY:
-          lastGaze.current && typeof lastGaze.current.y === "number"
-            ? Math.floor(lastGaze.current.y)
-            : -1,
+  //       positionY:
+  //         lastGaze.current && typeof lastGaze.current.y === "number"
+  //           ? Math.floor(lastGaze.current.y)
+  //           : -1,
 
-        eyeX: data?.x || null,
-        eyeY: data?.y || null,
-        hoverType: lastHoverElement.current
-          ? getHoverType(lastHoverElement.current)
-          : "none",
-        isMouseDown: isMouseDown.current,
-        scrollDirection: scrollDirection.current,
-      };
+  //       eyeX: data?.x || -1,
+  //       eyeY: data?.y || -1,
+  //       hoverType: lastHoverElement.current
+  //         ? getHoverType(lastHoverElement.current)
+  //         : "none",
+  //       isMouseDown: isMouseDown.current,
+  //       scrollDirection: scrollDirection.current,
+  //     };
 
-      if (dataRef.current.timeseries.length > 100) {
-        dataRef.current.timeseries.shift();
-      }
-      dataRef.current.timeseries.push(entry);
-      console.log(dataRef.current.timeseries);
-      lastGaze.current = data;
-      lastTime.current = clock;
-    };
+  //     if (dataRef.current.timeseries.length >= 250) {
+  //       dataRef.current.timeseries.shift();
+  //     }
+  //     dataRef.current.timeseries.push(entry);
 
-    const initializeWebGazer = async () => {
-      if (!window.saveDataAcrossSessions) {
-        await localforage.setItem("webgazerGlobalData", null);
-        await localforage.setItem("webgazerGlobalSettings", null);
-      }
-      const webgazerInstance = await window.webgazer
-        .setRegression("ridge")
-        .setTracker("TFFacemesh")
-        .begin();
+  //     fetchCounterRef.current += 1;
 
-      webgazerInstance
-        .showVideoPreview(true)
-        .showPredictionPoints(true)
-        .applyKalmanFilter(true);
+  //     // Trigger every 5 new entries
+  //     if (
+  //       fetchCounterRef.current % 2 === 0 &&
+  //       dataRef.current.timeseries.length === 250 &&
+  //       location.pathname !== "/onboarding"
+  //     ) {
+  //       console.log("AAAAAAAAAAAAAAAAAAAA");
+  //       fetch("http://localhost:8000/get-issue", {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ keys: dataRef.current.timeseries }),
+  //       })
+  //         .then((response) => response.json())
+  //         .then((data) => {
+  //           console.log(issueTimerRef.current);
+  //           if (issueArray.length >= 20) {
+  //             issueArray.shift();
+  //           }
+  //           issueArray.push(data);
+  //           console.log(issueArray);
 
-      window.webgazer.setGazeListener(eyeListener);
-    };
+  //           if (issueArray.length === 20 && issueTimerRef.current === 0) {
+  //             const counts = { 0: 0, 1: 0, 2: 0 };
+  //             issueArray.forEach((item) => {
+  //               if (item === 0 || item === 1 || item === 2) {
+  //                 counts[item]++;
+  //               }
+  //             });
+  //             console.log(counts);
+  //             const threshold = 10;
+  //             let newIssueValue = 0;
 
-    initializeWebGazer();
+  //             if (counts[1] > threshold) {
+  //               newIssueValue = 1;
+  //             } else if (counts[2] > threshold) {
+  //               newIssueValue = 2;
+  //             }
+  //             console.log(newIssueValue, "newIssue");
+  //             const previousIssue = issue;
 
-    return () => {
-      if (window.webgazer) {
-        try {
-          window.webgazer.end();
-        } catch (err) {
-          console.warn("Error ending WebGazer:", err);
-        }
-      }
-    };
-  }, []);
+  //             // Set the issue value
+  //             setIssue(newIssueValue);
+  //             setShowIssueBox(newIssueValue + 1);
+  //             console.log(showIssueBox, "issuebox");
+  //             if (previousIssue === 0 && newIssueValue !== 0) {
+  //               // Clear any existing timer
+  //               if (issueTimerRef.current) {
+  //                 clearTimeout(issueTimerRef.current);
+  //               }
 
+  //               issueTimerRef.current = setTimeout(() => {}, 10000);
+  //             }
+  //           }
+  //         })
+  //         .catch((error) => console.error("Error sending message:", error));
+  //     } else if (
+  //       fetchCounterRef.current % 2 === 0 &&
+  //       dataRef.current.timeseries.length === 250 &&
+  //       location.pathname === "/onboarding"
+  //     ) {
+  //       setissueArray([]);
+  //       fetch("http://localhost:8000/get-issue", {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ keys: dataRef.current.timeseries }),
+  //       })
+  //         .then((response) => response.json())
+  //         .then((data) => {
+  //           issueArray.push(data);
+  //           console.log(issueArray);
+  //           if (issueArray.length >= 200) {
+  //             issueArray.shift();
+  //           }
+  //           const counts = { 0: 0, 1: 0, 2: 0 };
+  //           issueArray.forEach((item) => {
+  //             if (item === 0 || item === 1 || item === 2) {
+  //               counts[item]++;
+  //             }
+  //           });
+  //           console.log(counts);
+  //           if (location.pathname === "/") {
+  //             let newIssueValue = 0;
+  //             console.log(counts);
+  //             if (counts[1] > (issueArray.length * 40) / 100) {
+  //               newIssueValue = 1;
+  //             } else if (counts[2] > (issueArray.length * 40) / 100) {
+  //               newIssueValue = 2;
+  //             }
+  //             console.log(newIssueValue, "RETURN");
+
+  //             // Set the issue value
+  //             setIssue(newIssueValue);
+  //             setShowIssueBox(newIssueValue + 1);
+  //             setissueArray([]);
+  //           }
+  //         });
+  //     }
+  //     lastGaze.current = data;
+  //     lastTime.current = clock;
+  //   };
+
+  //   const initializeWebGazer = async () => {
+  //     if (!window.saveDataAcrossSessions) {
+  //       await localforage.setItem("webgazerGlobalData", null);
+  //       await localforage.setItem("webgazerGlobalSettings", null);
+  //     }
+  //     const webgazerInstance = await window.webgazer
+  //       .setRegression("ridge")
+  //       .setTracker("TFFacemesh")
+  //       .begin();
+
+  //     webgazerInstance
+  //       .showVideoPreview(true)
+  //       .showPredictionPoints(true)
+  //       .applyKalmanFilter(true);
+
+  //     window.webgazer.setGazeListener(eyeListener);
+  //   };
+
+  //   initializeWebGazer();
+
+  //   return () => {
+  //     if (window.webgazer) {
+  //       try {
+  //         window.webgazer.end();
+  //       } catch (err) {
+  //         console.warn("Error ending WebGazer:", err);
+  //       }
+  //     }
+
+  //     // Clean up timer on component unmount
+  //     if (issueTimerRef.current) {
+  //       clearTimeout(issueTimerRef.current);
+  //     }
+  //   };
+  // }, [location.pathname]);
   // ------------------------------------------------------------------------------
 
   useEffect(() => {
@@ -270,7 +376,6 @@ function App() {
         return;
       }
 
-      // Set state from DB if available; otherwise, use defaults.
       setTextSizeModifier(data.textSizeModifier || 1);
       setBrightnessIndex(data.brightnessIndex || 1);
       setSimplify(data.simplify || false);
@@ -280,7 +385,6 @@ function App() {
     }
   };
 
-  // Update database with changed values (if user is logged in).
   const updateUserSettings = async (updates) => {
     if (userId === null) return;
 
@@ -298,20 +402,17 @@ function App() {
     }
   };
 
-  // Save or clear local storage settings based on login status.
   useEffect(() => {
     localStorage.setItem("isUserLoggedIn", isUserLoggedIn);
     fetchUserSettings();
 
     if (isUserLoggedIn) {
-      // Remove guest settings when user logs in.
       localStorage.removeItem("textSizeModifier");
       localStorage.removeItem("brightnessIndex");
       localStorage.removeItem("simplify");
     }
   }, [isUserLoggedIn]);
 
-  // Save modifications to local storage when not logged in.
   useEffect(() => {
     if (!isUserLoggedIn) {
       localStorage.setItem("textSizeModifier", textSizeModifier.toString());
@@ -334,7 +435,6 @@ function App() {
     if (isUserLoggedIn) updateUserSettings({ simplify });
   }, [simplify, isUserLoggedIn]);
 
-  // Handle selection changes
   useEffect(() => {
     switch (selectionIndex) {
       case 1:
@@ -345,6 +445,14 @@ function App() {
         break;
       case 3:
         setSimplify((prev) => !prev);
+        break;
+      case 4:
+        const fontCycle = ["Oxanium", "Arial", "Times New Roman"];
+        setFontNum((prev) => {
+          const newFontNum = prev + 1;
+          setFont(fontCycle[newFontNum % 3]); // Use updated fontNum immediately
+          return newFontNum;
+        });
         break;
       case 5:
         setBrightnessIndex((prev) => prev * 1.1);
@@ -358,12 +466,44 @@ function App() {
       case 8:
         navigate("/about");
         break;
+      case 9:
+        navigate("/navigation");
+        break;
+      case 10:
+        navigate("/graph");
+        break;
+      case 11:
+        navigate("/signin");
+        break;
+      case 12:
+        navigate("/signup");
+        break;
       default:
         break;
     }
     setSelectionIndex(-1);
   }, [selectionIndex, navigate]);
 
+  function skillIssue() {
+    setShowIssueBox(3);
+  }
+
+  function eyeIssue() {
+    setShowIssueBox(2);
+  }
+  function changeIssue() {
+    if (showIssueBox === 2) {
+      setTextSizeModifier((prev) => prev * 1.625);
+    } else if (showIssueBox === 3) {
+      setSimplify(true);
+    }
+    setShowIssueBox(1);
+  }
+
+  function closeIssue() {
+    setShowIssueBox(1);
+  }
+  console.log(showIssueBox);
   return (
     <React.StrictMode>
       {location.pathname !== "/onboarding" && (
@@ -374,6 +514,7 @@ function App() {
           setSimplify={setSimplify}
           isUserLoggedIn={isUserLoggedIn}
           setIsUserLoggedIn={setIsUserLoggedIn}
+          font={font}
         />
       )}
       {location.pathname !== "/onboarding" && location.pathname === "/" && (
@@ -385,6 +526,7 @@ function App() {
           simplify={simplify}
           gazeX={gazeX}
           gazeY={gazeY}
+          font={font}
         />
       )}
       {location.pathname === "/about" && (
@@ -396,6 +538,7 @@ function App() {
           simplify={simplify}
           gazeX={gazeX}
           gazeY={gazeY}
+          font={font}
         />
       )}
       {location.pathname !== "/onboarding" &&
@@ -409,6 +552,7 @@ function App() {
             simplify={simplify}
             gazeX={gazeX}
             gazeY={gazeY}
+            font={font}
           />
         )}
 
@@ -424,8 +568,81 @@ function App() {
             setSimplify,
             setIsUserLoggedIn,
             isUserLoggedIn,
+            font,
           }}
         />
+      </div>
+      {showIssueBox !== 1 && (
+        <div
+          class="issueBox"
+          style={{
+            display: "flex",
+            position: "fixed",
+            top: "20%",
+            transform: "translateX(75%)",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            borderRadius: "50px",
+            zIndex: "999",
+            backgroundColor: " #231f01",
+            boxShadow: "0px 4px 30px rgba(0, 0, 0, 0.24)",
+            transition: "height 0.3s, width 0.3s, border-radius 0.3s",
+            backdropFilter: "blur(16px) saturate(180%)",
+            backgroundColor: "rgba(17, 25, 40, 0.25)",
+            border: "1px solid rgba(255, 255, 255, 0.125)",
+            filter: "drop-shadow(0 30px 10px rgba(0, 0, 0, 0.125))",
+            backfaceVisibility: "hidden",
+            border: "3px solid #c3ff9e80",
+            height: "40%",
+            width: "40%",
+            fontSize: "28px",
+            padding: "10px",
+            textAlign: "center",
+          }}
+        >
+          <p style={{ fontFamily: "font" }}>
+            You seem to have an issue! Do you want to change the website?
+          </p>
+          <div>
+            <button
+              style={{
+                fontFamily: font,
+                fontSize: "28px",
+                margin: "10px",
+                padding: "10px",
+              }}
+              onClick={changeIssue}
+            >
+              Yes
+            </button>
+            <button
+              style={{
+                fontFamily: font,
+                fontSize: "28px",
+                margin: "10px",
+                padding: "10px",
+              }}
+              onClick={closeIssue}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div
+        class="testing"
+        style={{
+          width: "600px",
+          position: "fixed",
+          top: "10%",
+          transform: "translateX(50%)",
+        }}
+      >
+        <button>1</button>
+        <button onClick={eyeIssue}>2</button>
+        <button onClick={skillIssue}>3</button>
       </div>
     </React.StrictMode>
   );

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useOutletContext, useNavigate } from 'react-router-dom';
-import { createClient } from '@supabase/supabase-js';
-import VoiceButton from '../components/VoiceButton';
-import TextInput from '../components/TextInput';
+import React, { useState } from "react";
+import { useOutletContext, useNavigate } from "react-router-dom";
+import { createClient } from "@supabase/supabase-js";
+import VoiceButton from "../components/VoiceButton";
+import TextInput from "../components/TextInput";
 import "./SignIn.css";
 
 const supabaseUrl = "https://hgatxkpmrskbdqigenav.supabase.co";
@@ -19,24 +19,24 @@ function SignUp() {
     simplify,
     setIsUserLoggedIn,
     isUserLoggedIn,
+    font,
   } = useOutletContext();
-  
+
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
+    setErrorMessage("");
 
     try {
-
       const { data: existingUser, error: fetchError } = await supabase
         .from("userData")
         .select()
-        .eq('email', email); 
+        .eq("email", email);
 
       if (fetchError) {
         console.error("Error fetching user data:", fetchError);
@@ -44,7 +44,7 @@ function SignUp() {
       }
 
       if (existingUser.length > 0) {
-        setErrorMessage('Email is already in use. Please LOG IN.');
+        setErrorMessage("Email is already in use. Please LOG IN.");
         return;
       }
 
@@ -73,99 +73,101 @@ function SignUp() {
       }
 
       console.log("Inserted user with ID:", userDataId);
-      setIsUserLoggedIn(email)
-      navigate('/onboarding');
+      setIsUserLoggedIn(email);
+      navigate("/onboarding");
     } catch (error) {
-      setErrorMessage(error.message.includes('Invalid login credentials') 
-        ? 'Invalid email' 
-        : 'Sign-up failed. Please try again.');
+      setErrorMessage(
+        error.message.includes("Invalid login credentials")
+          ? "Invalid email"
+          : "Sign-up failed. Please try again."
+      );
     }
   };
 
   // Simplified styles
   const simplifiedStyles = {
     container: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
-      backgroundColor: '#fff',
-      fontFamily: 'Arial, sans-serif'
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+      backgroundColor: "#fff",
+      fontFamily: "Arial, sans-serif",
     },
     card: {
-      width: '400px',
-      padding: '30px',
-      backgroundColor: '#f8f8f8',
-      borderRadius: '8px',
-      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-      textAlign: 'center'
+      width: "400px",
+      padding: "30px",
+      backgroundColor: "#f8f8f8",
+      borderRadius: "8px",
+      boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+      textAlign: "center",
     },
     title: {
       fontSize: `${28 * textSizeModifier}px`,
-      fontWeight: 'bold',
-      color: '#333',
-      marginBottom: '15px'
+      fontWeight: "bold",
+      color: "#333",
+      marginBottom: "15px",
     },
     description: {
       fontSize: `${16 * textSizeModifier}px`,
-      color: '#555',
-      marginBottom: '30px'
+      color: "#555",
+      marginBottom: "30px",
     },
     formGroup: {
-      marginBottom: '20px',
-      textAlign: 'left'
+      marginBottom: "20px",
+      textAlign: "left",
     },
     label: {
-      display: 'block',
+      display: "block",
       fontSize: `${16 * textSizeModifier}px`,
-      fontWeight: 'bold',
-      color: '#333',
-      marginBottom: '8px'
+      fontWeight: "bold",
+      color: "#333",
+      marginBottom: "8px",
     },
     input: {
-      width: '100%',
-      padding: '12px',
+      width: "100%",
+      padding: "12px",
       fontSize: `${16 * textSizeModifier}px`,
-      border: '1px solid #ddd',
-      borderRadius: '4px',
-      backgroundColor: '#fff'
+      border: "1px solid #ddd",
+      borderRadius: "4px",
+      backgroundColor: "#fff",
     },
     errorMessage: {
-      color: '#d32f2f',
+      color: "#d32f2f",
       fontSize: `${14 * textSizeModifier}px`,
-      marginBottom: '15px',
-      textAlign: 'left',
-      fontWeight: 'bold'
+      marginBottom: "15px",
+      textAlign: "left",
+      fontWeight: "bold",
     },
     successMessage: {
-      color: '#4caf50',
+      color: "#4caf50",
       fontSize: `${14 * textSizeModifier}px`,
-      marginBottom: '15px',
-      textAlign: 'left',
-      fontWeight: 'bold'
+      marginBottom: "15px",
+      textAlign: "left",
+      fontWeight: "bold",
     },
     button: {
-      backgroundColor: '#2196f3',
-      color: 'white',
-      border: 'none',
-      borderRadius: '4px',
-      padding: '12px 24px',
+      backgroundColor: "#2196f3",
+      color: "white",
+      border: "none",
+      borderRadius: "4px",
+      padding: "12px 24px",
       fontSize: `${16 * textSizeModifier}px`,
-      fontWeight: 'bold',
-      cursor: 'pointer',
-      width: '100%',
-      marginBottom: '20px'
+      fontWeight: "bold",
+      cursor: "pointer",
+      width: "100%",
+      marginBottom: "20px",
     },
     linkText: {
       fontSize: `${14 * textSizeModifier}px`,
-      color: '#555'
+      color: "#555",
     },
     link: {
-      color: '#2196f3', 
-      cursor: 'pointer',
-      fontWeight: 'bold',
-      textDecoration: 'none'
-    }
+      color: "#2196f3",
+      cursor: "pointer",
+      fontWeight: "bold",
+      textDecoration: "none",
+    },
   };
 
   // Render simplified version
@@ -177,10 +179,12 @@ function SignUp() {
           <p style={simplifiedStyles.description}>
             Join our community to save your preferences and settings!
           </p>
-          
+
           <form onSubmit={handleSignUp}>
             <div style={simplifiedStyles.formGroup}>
-              <label htmlFor="email" style={simplifiedStyles.label}>Email</label>
+              <label htmlFor="email" style={simplifiedStyles.label}>
+                Email
+              </label>
               <input
                 id="email"
                 type="email"
@@ -194,14 +198,15 @@ function SignUp() {
 
             {errorMessage && (
               <div style={simplifiedStyles.errorMessage}>
-                {errorMessage} {errorMessage.includes('LOG IN') && 
-                  <span 
+                {errorMessage}{" "}
+                {errorMessage.includes("LOG IN") && (
+                  <span
                     style={simplifiedStyles.link}
-                    onClick={() => navigate('/signin')}
+                    onClick={() => navigate("/signin")}
                   >
                     LOG IN
                   </span>
-                }
+                )}
               </div>
             )}
 
@@ -218,33 +223,62 @@ function SignUp() {
 
           <p style={simplifiedStyles.linkText}>
             Already have an account?{" "}
-            <span 
+            <span
               style={simplifiedStyles.link}
-              onClick={() => navigate('/signin')}
+              onClick={() => navigate("/signin")}
             >
               LOG IN
             </span>
           </p>
         </div>
-        
-        <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
+
+        <VoiceButton
+          setSelectionIndex={setSelectionIndex}
+          selectionIndex={selectionIndex}
+        />
       </div>
     );
   }
 
   // Render original version
   return (
-    <div className="signInPage" style={{ filter: `brightness(${1 * brightnessIndex})` }}>
+    <div
+      className="signInPage"
+      style={{ filter: `brightness(${1 * brightnessIndex})`, fontFamily: font }}
+    >
       <div className="signInCard">
-        <h2 style={{ fontSize: `${36 * textSizeModifier}px`, fontWeight: "300" }}>Create New Account</h2>
-        <p style={{ fontSize: `${20 * textSizeModifier}px`, fontWeight: "300" }}>Join our community to save your preferences and settings!</p>
+        <h2
+          style={{ fontSize: `${36 * textSizeModifier}px`, fontWeight: "300" }}
+        >
+          Create New Account
+        </h2>
+        <p
+          style={{ fontSize: `${20 * textSizeModifier}px`, fontWeight: "300" }}
+        >
+          Join our community to save your preferences and settings!
+        </p>
 
-        <form style={{ 
-          width: "100%", 
-          justifyContent: "center"
-        }} onSubmit={handleSignUp}>
-          <div style={{ display: "flex", width: "100%", justifyContent: "center", textAlign: "left", padding: "10px" }}>
-            <h2 style={{ width: "20%", fontSize: `${20 * textSizeModifier}px` }}>Email</h2>
+        <form
+          style={{
+            width: "100%",
+            justifyContent: "center",
+          }}
+          onSubmit={handleSignUp}
+        >
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "center",
+              textAlign: "left",
+              padding: "10px",
+            }}
+          >
+            <h2
+              style={{ width: "20%", fontSize: `${20 * textSizeModifier}px` }}
+            >
+              Email
+            </h2>
             <TextInput
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -254,49 +288,56 @@ function SignUp() {
           </div>
 
           {errorMessage && (
-            <div style={{ 
-              color: "#ff6b6b", 
-              fontSize: `${16 * textSizeModifier}px`, 
-              marginBottom: '15px',
-              textShadow: '0 0 5px rgba(255, 107, 107, 0.5)'
-            }}>
-              {errorMessage.includes('LOG IN') ? (
+            <div
+              style={{
+                color: "#ff6b6b",
+                fontSize: `${16 * textSizeModifier}px`,
+                marginBottom: "15px",
+                textShadow: "0 0 5px rgba(255, 107, 107, 0.5)",
+              }}
+            >
+              {errorMessage.includes("LOG IN") ? (
                 <>
                   Email is already in use. Please{" "}
-                  <button 
-                    className="link-button" 
-                    onClick={() => navigate('/signin')}
-                    style={{ 
+                  <button
+                    className="link-button"
+                    onClick={() => navigate("/signin")}
+                    style={{
                       fontSize: `${16 * textSizeModifier}px`,
-                      cursor: 'pointer',
-                      fontWeight: 'bold' 
+                      cursor: "pointer",
+                      fontWeight: "bold",
                     }}
                   >
                     LOG IN
                   </button>
                 </>
-              ) : errorMessage}
+              ) : (
+                errorMessage
+              )}
             </div>
           )}
-          
+
           {successMessage && (
-            <p style={{ 
-              color: '#7dff8e', 
-              fontSize: `${16 * textSizeModifier}px`, 
-              textShadow: '0 0 5px rgba(125, 255, 142, 0.5)'
-            }}>
+            <p
+              style={{
+                color: "#7dff8e",
+                fontSize: `${16 * textSizeModifier}px`,
+                textShadow: "0 0 5px rgba(125, 255, 142, 0.5)",
+              }}
+            >
               {successMessage}
             </p>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="scifi-button"
-            style={{ 
+            style={{
               fontSize: `${18 * textSizeModifier}px`,
-              width: '100%',
-              marginTop: '10px',
-              cursor: 'pointer'
+              width: "100%",
+              marginTop: "10px",
+              cursor: "pointer",
+              backgroundColor: "black",
             }}
           >
             Sign Up
@@ -304,20 +345,22 @@ function SignUp() {
         </form>
 
         <div>
-          <p style={{ 
-            marginTop: '30px', 
-            fontSize: `${16 * textSizeModifier}px`,
-            color: '#c3ff9e',
-            textShadow: '0 0 5px #c3ff9e80'
-          }}>
+          <p
+            style={{
+              marginTop: "30px",
+              fontSize: `${16 * textSizeModifier}px`,
+              color: "#c3ff9e",
+              textShadow: "0 0 5px #c3ff9e80",
+            }}
+          >
             Already have an account?{" "}
-            <button 
-              className="link-button" 
-              onClick={() => navigate('/signin')}
-              style={{ 
+            <button
+              className="link-button"
+              onClick={() => navigate("/signin")}
+              style={{
                 fontSize: `${16 * textSizeModifier}px`,
-                cursor: 'pointer',
-                fontWeight: 'bold' 
+                cursor: "pointer",
+                fontWeight: "bold",
               }}
             >
               LOG IN
@@ -325,7 +368,10 @@ function SignUp() {
           </p>
         </div>
       </div>
-      <VoiceButton setSelectionIndex={setSelectionIndex} selectionIndex={selectionIndex} />
+      <VoiceButton
+        setSelectionIndex={setSelectionIndex}
+        selectionIndex={selectionIndex}
+      />
     </div>
   );
 }

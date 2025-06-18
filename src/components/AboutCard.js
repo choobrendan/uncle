@@ -1,67 +1,63 @@
-import React from 'react';
-import './AboutCard.css'; // Import the external CSS for styling
+import React from "react";
+import "./AboutCard.css"; // Import the external CSS for styling
 
-const AboutCard = ({ item, textSizeModifier, simplify }) => {
+const AboutCard = ({ key, item, textSizeModifier, simplify }) => {
   // Simplified card styles
   const simplifiedCardStyles = {
     card: {
-      minWidth: '120px',
-      width:"20%",
-      padding: '20px',
-      backgroundColor: '#f5f5f5',
-      borderRadius: '8px',
-      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
-      margin: '0',
-      position: 'relative'
+      minWidth: "120px",
+      width: "20%",
+      padding: "20px",
+      backgroundColor: "#f5f5f5",
+      borderRadius: "8px",
+      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+      margin: "0",
+      position: "relative",
     },
     cardContent: {
-      padding: '0',
-      backgroundColor: 'transparent'
+      padding: "0",
+      backgroundColor: "transparent",
     },
-    cardTitleContainer:{
+    cardTitleContainer: {
       height: "100px",
-    textAlign: "center",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+      textAlign: "center",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
     },
     cardTitle: {
       fontSize: `${22 * textSizeModifier}px`,
-      fontWeight: 'bold',
-      color: '#333',
-      marginBottom: '10px',
-      textTransform: 'none',
-      letterSpacing: 'normal',
-      textShadow: 'none',
-      fontFamily: 'Arial, sans-serif'
+      fontWeight: "bold",
+      color: "#333",
+      marginBottom: "10px",
+      textTransform: "none",
+      letterSpacing: "normal",
+      textShadow: "none",
+      fontFamily: "Arial, sans-serif",
     },
     cardText: {
       fontSize: `${16 * textSizeModifier}px`,
-      color: '#555',
-      lineHeight: '1.5',
-      margin: '0',
-      textShadow: 'none',
-      fontFamily: 'Arial, sans-serif'
-    }
+      color: "#555",
+      lineHeight: "1.5",
+      margin: "0",
+      textShadow: "none",
+      fontFamily: "Arial, sans-serif",
+    },
   };
 
   // Original card style adjustments
   const originalCardStyles = {
-    minWidth: `${320 * textSizeModifier}px`
+    minWidth: `${320 * textSizeModifier}px`,
   };
 
   if (simplify) {
     return (
       <div style={simplifiedCardStyles.card}>
         <div style={simplifiedCardStyles.cardContent}>
-        <div style={simplifiedCardStyles.cardTitleContainer}>
-          <h2 style={simplifiedCardStyles.cardTitle}>
-            {item.name}
-          </h2>
+          <div style={simplifiedCardStyles.cardTitleContainer}>
+            <h2 style={simplifiedCardStyles.cardTitle}>{item.name}</h2>
           </div>
-          <p style={simplifiedCardStyles.cardText}>
-            {item.description}
-          </p>
+          <p style={simplifiedCardStyles.cardText}>{item.description}</p>
         </div>
       </div>
     );
@@ -72,13 +68,28 @@ const AboutCard = ({ item, textSizeModifier, simplify }) => {
       <div className="card-grid"></div>
       <div className="geometric-shape circle"></div>
       <div className="geometric-shape triangle"></div>
-      <div className="card-image"></div>
+      <div className="card-image">
+        <img
+          style={{
+            filter:
+              "invert(91%) sepia(15%) saturate(981%) hue-rotate(44deg) brightness(102%) contrast(104%)",
+            width: "320px",
+          }}
+          src={`about ${item.index + 1}.png`}
+        ></img>
+      </div>
       <div className="neon-line"></div>
       <div className="card-content">
-        <h2 className="card-title" style={{ fontSize: `${24 * textSizeModifier}px` }}>
+        <h2
+          className="card-title"
+          style={{ fontSize: `${24 * textSizeModifier}px` }}
+        >
           {item.name}
         </h2>
-        <p className="card-text" style={{ fontSize: `${16 * textSizeModifier}px` }}>
+        <p
+          className="card-text"
+          style={{ fontSize: `${16 * textSizeModifier}px` }}
+        >
           {item.description}
         </p>
       </div>

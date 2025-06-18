@@ -13,6 +13,7 @@ const Header = ({
   isUserLoggedIn,
   setIsUserLoggedIn,
   setSimplify,
+  font,
 }) => {
   const [isChecked, setIsChecked] = useState(false);
   useEffect(() => {
@@ -31,9 +32,9 @@ const Header = ({
   }
 
   const simplifiedStyles = {
-    home:{
+    home: {
       position: "absolute",
-      left:"0px",
+      left: "0px",
       padding: "10px 15px",
       margin: "0 10px",
       color: "#333",
@@ -92,7 +93,7 @@ const Header = ({
     return (
       <div style={simplifiedStyles.header}>
         <div style={simplifiedStyles.centered}>
-        <a href="/" style={simplifiedStyles.home}>
+          <a href="/" style={simplifiedStyles.home}>
             UNCLE
           </a>
           <a href="/about" style={simplifiedStyles.navLink}>
@@ -104,24 +105,31 @@ const Header = ({
           <a href="/graph" style={simplifiedStyles.navLink}>
             Graph
           </a>
-          <div  style={{ position: "absolute", right: "40px", display:"flex", flexDirection:"row" }}>
           <div
-            className={`toggle-switch ${simplify ? "on" : "off"}`}
-            onClick={handleCheckboxChange}
+            style={{
+              position: "absolute",
+              right: "40px",
+              display: "flex",
+              flexDirection: "row",
+            }}
           >
-            <div className="switch-handle" />
+            <div
+              className={`toggle-switch ${simplify ? "on" : "off"}`}
+              onClick={handleCheckboxChange}
+            >
+              <div className="switch-handle" />
+            </div>
+            {isUserLoggedIn === "" ? (
+              <a href="/signin" style={simplifiedStyles.signInButton}>
+                Sign In
+              </a>
+            ) : (
+              <a onClick={handleSignOut} style={simplifiedStyles.signInButton}>
+                Sign Out
+              </a>
+            )}
           </div>
-          {isUserLoggedIn === "" ? (
-            <a href="/signin" style={simplifiedStyles.signInButton}>
-              Sign In
-            </a>
-          ) : (
-            <a onClick={handleSignOut} style={simplifiedStyles.signInButton}>
-              Sign Out
-            </a>
-          )}
         </div>
-      </div>
       </div>
     );
   }
@@ -130,12 +138,16 @@ const Header = ({
   return (
     <div
       className="header"
-      style={{ filter: `brightness(${1 * brightnessIndex}` }}
+      style={{ filter: `brightness(${1 * brightnessIndex}`, fontFamily: font }}
     >
       <div className="centered">
-      <a className="scifi-button" href="/" style={{position:"absolute", left:"20px",fontSize:"24px"}}>
-            UNCLE
-          </a>
+        <a
+          className="scifi-button"
+          href="/"
+          style={{ position: "absolute", left: "20px", fontSize: "24px" }}
+        >
+          UNCLE
+        </a>
         <a className="scifi-button" href="/about">
           About
         </a>
@@ -146,36 +158,32 @@ const Header = ({
         <a className="scifi-button" href="/graph">
           Graph
         </a>
-<div style={{ position: "absolute", right: "40px", display:"flex", flexDirection:"row" }}>
-
-
-<div
-          className={`toggle-switch ${simplify ? "on" : "off"}`}
-          onClick={handleCheckboxChange}
+        <div
+          style={{
+            position: "absolute",
+            right: "40px",
+            display: "flex",
+            flexDirection: "row",
+          }}
         >
-          <div className="switch-handle" />
+          <div
+            className={`toggle-switch ${simplify ? "on" : "off"}`}
+            onClick={handleCheckboxChange}
+          >
+            <div className="switch-handle" />
+          </div>
+
+          {isUserLoggedIn === "" ? (
+            <a className="scifi-button" href="/signin">
+              Sign In
+            </a>
+          ) : (
+            <a className="scifi-button" onClick={handleSignOut}>
+              Sign Out
+            </a>
+          )}
         </div>
-
-
-        {isUserLoggedIn === "" ? (
-          <a
-            className="scifi-button"
-            href="/signin"
-            
-          >
-            Sign In
-          </a>
-        ) : (
-          <a
-            className="scifi-button"
-            onClick={handleSignOut}
-          
-          >
-            Sign Out
-          </a>
-        )}
       </div>
-    </div>
     </div>
   );
 };

@@ -11,6 +11,7 @@
     "@types/papaparse": "^5.3.15",
     "concurrently": "^9.1.2",
     "dotenv": "^16.4.7",
+    "file-saver": "^2.0.5",
     "localforage": "^1.10.0",
     "papaparse": "^5.5.2",
     "react": "^19.0.0",
@@ -45,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "wait-on": "^8.0.3"
   }
 }

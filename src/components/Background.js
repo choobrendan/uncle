@@ -9,6 +9,7 @@ const Background = ({
   gazeX,
   gazeY,
   aboutRender,
+  font,
 }) => {
   const [mouseX, setMouseX] = useState("");
   const [mouseY, setMouseY] = useState("");
@@ -34,7 +35,8 @@ const Background = ({
     width: "100vw",
     zIndex: -999,
     backgroundColor: !simplify ? "#000000" : "#231f01",
-    filter: `brightness(${brightnessIndex})`, // dynamically apply brightness
+    filter: `brightness(${brightnessIndex})`,
+    fontFamily: font,
   };
 
   return (

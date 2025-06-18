@@ -12,6 +12,7 @@ function About() {
     brightnessIndex,
     setBrightnessIndex,
     simplify,
+    font,
   } = useOutletContext();
 
   const [showRender, setShowRender] = useState(true);
@@ -62,6 +63,7 @@ function About() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        fontFamily: font,
         filter: `brightness(${1 * brightnessIndex}`,
       }}
     >

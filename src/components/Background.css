@@ -52,7 +52,7 @@
   flex-direction: row;
   color: #c3ff9e80;
   text-shadow: 0 0 5px #c3ff9e64;
-  font-family: 'Oxanium';
+  /* font-family: 'Oxanium'; */
   bottom: 10px;
   z-index: 999;
 }
