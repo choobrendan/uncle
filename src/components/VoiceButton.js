@@ -50,7 +50,7 @@ const VoiceButton = ({
       setButtonWidth("75px");
       setBorderRadius(75);
     } else {
-      setButtonHeight("80%");
+      setButtonHeight("550px");
       setButtonWidth("35%");
       setBorderRadius(25);
     }

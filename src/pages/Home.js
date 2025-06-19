@@ -28,13 +28,14 @@ function Home() {
   const [displayedText, setDisplayedText] = useState("");
   const [cursorVisible, setCursorVisible] = useState(true);
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
   const [currentStyle, setCurrentStyle] = useState({
-    color: "",
-    fontSize: "",
-    fontWeight: "",
-    letterSpacing: "",
-    fontFamily: "",
+    color: "rgb(150, 150, 150)",
+    fontSize: "40px",
+    fontWeight: 400,
+    letterSpacing: "2px",
+    fontFamily: "Arial",
   });
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [message, setMessage] = useState("");
@@ -43,8 +44,8 @@ function Home() {
 
   const typingInterval = useRef(null);
   const deletingInterval = useRef(null);
-
-  const sentences = ["Customised?"];
+  const intervalRef = useRef(null);
+  const sentences = ["customised?"];
   const command = [
     "Increase font size",
     "Decrease font size",
@@ -107,7 +108,6 @@ function Home() {
     },
   };
 
-  // Text Style Computation
   const textStyle = {
     color: currentStyle.color,
     fontSize: currentStyle.fontSize,
@@ -115,17 +115,13 @@ function Home() {
     letterSpacing: currentStyle.letterSpacing,
     fontFamily: currentStyle.fontFamily,
   };
-
-  useEffect(() => {
-    // Start typing effect on mount
-    typingInterval.current = setInterval(type, 100);
-
-    return () => {
-      // Cleanup intervals on unmount
-      if (typingInterval.current) clearInterval(typingInterval.current);
-      if (deletingInterval.current) clearInterval(deletingInterval.current);
-    };
-  }, []);
+  // Clear any existing interval
+  const clearCurrentInterval = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
 
   const handleMouseMove = (event) => {
     setMouseX(event.clientX.toString().padStart(4, "0"));
@@ -172,44 +168,76 @@ function Home() {
     });
   };
 
-  const type = () => {
-    const currentSentence = sentences[currentSentenceIndex];
+  // Start typing animation
+  const startTyping = () => {
+    clearCurrentInterval();
+    setIsTyping(true);
+    setCursorVisible(true);
 
-    setDisplayedText(currentSentence.substring(0, currentCharIndex + 1));
-    setCurrentCharIndex((prevIndex) => prevIndex + 1);
+    intervalRef.current = setInterval(() => {
+      setCurrentCharIndex((prevIndex) => {
+        const currentSentence = sentences[0]; // Since we only have one sentence
+        const newIndex = prevIndex + 1;
+        const newText = currentSentence.substring(0, newIndex);
 
-    if (displayedText === currentSentence) {
-      clearInterval(typingInterval.current);
-      setCursorVisible(false);
-      setTimeout(() => {
-        deletingInterval.current = setInterval(deleteText, 50);
-      }, 1000);
-    }
+        setDisplayedText(newText);
+
+        // Check if we've typed the complete sentence
+        if (newIndex >= currentSentence.length) {
+          clearCurrentInterval();
+          setCursorVisible(false);
+
+          // Start deleting after a pause
+          setTimeout(() => {
+            startDeleting();
+          }, 1000);
+        }
+
+        return newIndex;
+      });
+    }, 100);
   };
 
-  const deleteText = () => {
-    const currentSentence = sentences[currentSentenceIndex];
-    setDisplayedText(currentSentence.substring(0, currentCharIndex - 1));
-    setCurrentCharIndex((prevIndex) => prevIndex - 1);
+  // Start deleting animation
+  const startDeleting = () => {
+    clearCurrentInterval();
+    setIsTyping(false);
 
-    if (displayedText === "") {
-      clearInterval(deletingInterval.current);
-      changeTextStyle();
+    intervalRef.current = setInterval(() => {
+      setCurrentCharIndex((prevIndex) => {
+        const currentSentence = sentences[0];
+        const newIndex = prevIndex - 1;
+        const newText = currentSentence.substring(0, newIndex);
 
-      if (currentSentenceIndex === sentences.length - 1) {
-        setCurrentSentenceIndex(0);
-      } else {
-        setCurrentSentenceIndex((prevIndex) => prevIndex + 1);
-      }
+        setDisplayedText(newText);
 
-      setCurrentCharIndex(0);
+        // Check if we've deleted all characters
+        if (newIndex <= 0) {
+          clearCurrentInterval();
+          changeTextStyle();
 
-      setTimeout(() => {
-        setCursorVisible(true);
-        typingInterval.current = setInterval(type, 100);
-      }, 200);
-    }
+          // Start typing again after a pause
+          setTimeout(() => {
+            startTyping();
+          }, 200);
+
+          return 0;
+        }
+
+        return newIndex;
+      });
+    }, 50);
   };
+
+  // Initialize the effect
+  useEffect(() => {
+    startTyping();
+
+    // Cleanup on unmount
+    return () => {
+      clearCurrentInterval();
+    };
+  }, []); // Empty dependency
 
   const sendText = () => {
     fetch("http://localhost:8000/send-message", {
@@ -304,8 +332,31 @@ function Home() {
             </div>
             <div style={{ width: "360px" }}></div>
             <div className="customised">
-              <div id="banner-text" style={textStyle}>
-                {displayedText}
+              <div id="banner-text">
+                <span style={textStyle}>{displayedText}</span>
+                {cursorVisible && (
+                  <span
+                    style={{
+                      color: currentStyle.color,
+                      fontSize: currentStyle.fontSize,
+                      animation: "blink 1s infinite",
+                    }}
+                  >
+                    |
+                  </span>
+                )}
+                <style jsx>{`
+                  @keyframes blink {
+                    0%,
+                    50% {
+                      opacity: 1;
+                    }
+                    51%,
+                    100% {
+                      opacity: 0;
+                    }
+                  }
+                `}</style>
               </div>
               <div
                 id="cursor"

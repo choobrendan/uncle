@@ -57,7 +57,7 @@ command = [
     {"id": 7, "name": "Navigate to home page"},
     {"id": 8, "name": "Navigate to about page"},
     {"id": 9, "name": "Navigate to navigation page"},
-    {"id": 10, "name": "Navigate to graph page"},
+    {"id": 10, "name": "Navigate to filter page"},
     {"id": 11, "name": "Navigate to log in page"},
     {"id": 12, "name": "Navigate to sign up page"},
 ]

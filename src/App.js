@@ -52,178 +52,177 @@ function App() {
   const issueTimerRef = useRef(0);
   // -- Updated WebGazer setup and gaze listener --------------------------------
 
-  // useEffect(() => {
-  //   const eyeListener = (data, clock) => {
-  //     if (!lastTime.current) {
-  //       lastTime.current = clock;
-  //     }
+  useEffect(() => {
+    const eyeListener = (data, clock) => {
+      if (!lastTime.current) {
+        lastTime.current = clock;
+      }
 
-  //     const duration = clock - lastTime.current;
-  //     const entry = {
-  //       time: new Date().toISOString(),
-  //       positionX:
-  //         lastGaze.current && typeof lastGaze.current.x === "number"
-  //           ? Math.floor(lastGaze.current.x)
-  //           : -1,
+      const duration = clock - lastTime.current;
+      const entry = {
+        time: new Date().toISOString(),
+        positionX:
+          lastGaze.current && typeof lastGaze.current.x === "number"
+            ? Math.floor(lastGaze.current.x)
+            : -1,
 
-  //       positionY:
-  //         lastGaze.current && typeof lastGaze.current.y === "number"
-  //           ? Math.floor(lastGaze.current.y)
-  //           : -1,
+        positionY:
+          lastGaze.current && typeof lastGaze.current.y === "number"
+            ? Math.floor(lastGaze.current.y)
+            : -1,
 
-  //       eyeX: data?.x || -1,
-  //       eyeY: data?.y || -1,
-  //       hoverType: lastHoverElement.current
-  //         ? getHoverType(lastHoverElement.current)
-  //         : "none",
-  //       isMouseDown: isMouseDown.current,
-  //       scrollDirection: scrollDirection.current,
-  //     };
+        eyeX: data?.x || -1,
+        eyeY: data?.y || -1,
+        hoverType: lastHoverElement.current
+          ? getHoverType(lastHoverElement.current)
+          : "none",
+        isMouseDown: isMouseDown.current,
+        scrollDirection: scrollDirection.current,
+      };
 
-  //     if (dataRef.current.timeseries.length >= 250) {
-  //       dataRef.current.timeseries.shift();
-  //     }
-  //     dataRef.current.timeseries.push(entry);
+      if (dataRef.current.timeseries.length >= 250) {
+        dataRef.current.timeseries.shift();
+      }
+      dataRef.current.timeseries.push(entry);
 
-  //     fetchCounterRef.current += 1;
+      fetchCounterRef.current += 1;
 
-  //     // Trigger every 5 new entries
-  //     if (
-  //       fetchCounterRef.current % 2 === 0 &&
-  //       dataRef.current.timeseries.length === 250 &&
-  //       location.pathname !== "/onboarding"
-  //     ) {
-  //       console.log("AAAAAAAAAAAAAAAAAAAA");
-  //       fetch("http://localhost:8000/get-issue", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ keys: dataRef.current.timeseries }),
-  //       })
-  //         .then((response) => response.json())
-  //         .then((data) => {
-  //           console.log(issueTimerRef.current);
-  //           if (issueArray.length >= 20) {
-  //             issueArray.shift();
-  //           }
-  //           issueArray.push(data);
-  //           console.log(issueArray);
+      // Trigger every 5 new entries
+      if (
+        fetchCounterRef.current % 2 === 0 &&
+        dataRef.current.timeseries.length === 250 &&
+        location.pathname !== "/onboarding"
+      ) {
+        console.log("AAAAAAAAAAAAAAAAAAAA");
+        fetch("http://localhost:8000/get-issue", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ keys: dataRef.current.timeseries }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(issueTimerRef.current);
+            if (issueArray.length >= 20) {
+              issueArray.shift();
+            }
+            issueArray.push(data);
+            console.log(issueArray);
 
-  //           if (issueArray.length === 20 && issueTimerRef.current === 0) {
-  //             const counts = { 0: 0, 1: 0, 2: 0 };
-  //             issueArray.forEach((item) => {
-  //               if (item === 0 || item === 1 || item === 2) {
-  //                 counts[item]++;
-  //               }
-  //             });
-  //             console.log(counts);
-  //             const threshold = 10;
-  //             let newIssueValue = 0;
+            if (issueArray.length === 20 && issueTimerRef.current === 0) {
+              const counts = { 0: 0, 1: 0, 2: 0 };
+              issueArray.forEach((item) => {
+                if (item === 0 || item === 1 || item === 2) {
+                  counts[item]++;
+                }
+              });
+              console.log(counts);
+              const threshold = 10;
+              let newIssueValue = 0;
 
-  //             if (counts[1] > threshold) {
-  //               newIssueValue = 1;
-  //             } else if (counts[2] > threshold) {
-  //               newIssueValue = 2;
-  //             }
-  //             console.log(newIssueValue, "newIssue");
-  //             const previousIssue = issue;
+              if (counts[1] > threshold) {
+                newIssueValue = 1;
+              } else if (counts[2] > threshold) {
+                newIssueValue = 2;
+              }
+              console.log(newIssueValue, "newIssue");
+              const previousIssue = issue;
 
-  //             // Set the issue value
-  //             setIssue(newIssueValue);
-  //             setShowIssueBox(newIssueValue + 1);
-  //             console.log(showIssueBox, "issuebox");
-  //             if (previousIssue === 0 && newIssueValue !== 0) {
-  //               // Clear any existing timer
-  //               if (issueTimerRef.current) {
-  //                 clearTimeout(issueTimerRef.current);
-  //               }
+              // Set the issue value
+              setIssue(newIssueValue);
+              setShowIssueBox(newIssueValue + 1);
+              console.log(showIssueBox, "issuebox");
+              if (previousIssue === 0 && newIssueValue !== 0) {
+                // Clear any existing timer
+                if (issueTimerRef.current) {
+                  clearTimeout(issueTimerRef.current);
+                }
 
-  //               issueTimerRef.current = setTimeout(() => {}, 10000);
-  //             }
-  //           }
-  //         })
-  //         .catch((error) => console.error("Error sending message:", error));
-  //     } else if (
-  //       fetchCounterRef.current % 2 === 0 &&
-  //       dataRef.current.timeseries.length === 250 &&
-  //       location.pathname === "/onboarding"
-  //     ) {
-  //       setissueArray([]);
-  //       fetch("http://localhost:8000/get-issue", {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ keys: dataRef.current.timeseries }),
-  //       })
-  //         .then((response) => response.json())
-  //         .then((data) => {
-  //           issueArray.push(data);
-  //           console.log(issueArray);
-  //           if (issueArray.length >= 200) {
-  //             issueArray.shift();
-  //           }
-  //           const counts = { 0: 0, 1: 0, 2: 0 };
-  //           issueArray.forEach((item) => {
-  //             if (item === 0 || item === 1 || item === 2) {
-  //               counts[item]++;
-  //             }
-  //           });
-  //           console.log(counts);
-  //           if (location.pathname === "/") {
-  //             let newIssueValue = 0;
-  //             console.log(counts);
-  //             if (counts[1] > (issueArray.length * 40) / 100) {
-  //               newIssueValue = 1;
-  //             } else if (counts[2] > (issueArray.length * 40) / 100) {
-  //               newIssueValue = 2;
-  //             }
-  //             console.log(newIssueValue, "RETURN");
+                issueTimerRef.current = setTimeout(() => {}, 10000);
+              }
+            }
+          })
+          .catch((error) => console.error("Error sending message:", error));
+      } else if (
+        fetchCounterRef.current % 2 === 0 &&
+        dataRef.current.timeseries.length === 250 &&
+        location.pathname === "/onboarding"
+      ) {
+        setissueArray([]);
+        fetch("http://localhost:8000/get-issue", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ keys: dataRef.current.timeseries }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            issueArray.push(data);
+            console.log(issueArray);
+            if (issueArray.length >= 200) {
+              issueArray.shift();
+            }
+            const counts = { 0: 0, 1: 0, 2: 0 };
+            issueArray.forEach((item) => {
+              if (item === 0 || item === 1 || item === 2) {
+                counts[item]++;
+              }
+            });
+            console.log(counts);
+            if (location.pathname === "/") {
+              let newIssueValue = 0;
+              console.log(counts);
+              if (counts[1] > (issueArray.length * 40) / 100) {
+                newIssueValue = 1;
+              } else if (counts[2] > (issueArray.length * 40) / 100) {
+                newIssueValue = 2;
+              }
+              console.log(newIssueValue, "RETURN");
 
-  //             // Set the issue value
-  //             setIssue(newIssueValue);
-  //             setShowIssueBox(newIssueValue + 1);
-  //             setissueArray([]);
-  //           }
-  //         });
-  //     }
-  //     lastGaze.current = data;
-  //     lastTime.current = clock;
-  //   };
+              // Set the issue value
+              setIssue(newIssueValue);
+              setShowIssueBox(newIssueValue + 1);
+              setissueArray([]);
+            }
+          });
+      }
+      lastGaze.current = data;
+      lastTime.current = clock;
+    };
 
-  //   const initializeWebGazer = async () => {
-  //     if (!window.saveDataAcrossSessions) {
-  //       await localforage.setItem("webgazerGlobalData", null);
-  //       await localforage.setItem("webgazerGlobalSettings", null);
-  //     }
-  //     const webgazerInstance = await window.webgazer
-  //       .setRegression("ridge")
-  //       .setTracker("TFFacemesh")
-  //       .begin();
+    const initializeWebGazer = async () => {
+      if (!window.saveDataAcrossSessions) {
+        await localforage.setItem("webgazerGlobalData", null);
+        await localforage.setItem("webgazerGlobalSettings", null);
+      }
+      const webgazerInstance = await window.webgazer
+        .setRegression("ridge")
+        .setTracker("TFFacemesh")
+        .begin();
 
-  //     webgazerInstance
-  //       .showVideoPreview(true)
-  //       .showPredictionPoints(true)
-  //       .applyKalmanFilter(true);
+      webgazerInstance
+        .showVideoPreview(true)
+        .showPredictionPoints(true)
+        .applyKalmanFilter(true);
 
-  //     window.webgazer.setGazeListener(eyeListener);
-  //   };
+      window.webgazer.setGazeListener(eyeListener);
+    };
 
-  //   initializeWebGazer();
+    initializeWebGazer();
 
-  //   return () => {
-  //     if (window.webgazer) {
-  //       try {
-  //         window.webgazer.end();
-  //       } catch (err) {
-  //         console.warn("Error ending WebGazer:", err);
-  //       }
-  //     }
+    return () => {
+      if (window.webgazer) {
+        try {
+          window.webgazer.end();
+        } catch (err) {
+          console.warn("Error ending WebGazer:", err);
+        }
+      }
 
-  //     // Clean up timer on component unmount
-  //     if (issueTimerRef.current) {
-  //       clearTimeout(issueTimerRef.current);
-  //     }
-  //   };
-  // }, [location.pathname]);
-  // ------------------------------------------------------------------------------
+      // Clean up timer on component unmount
+      if (issueTimerRef.current) {
+        clearTimeout(issueTimerRef.current);
+      }
+    };
+  }, [location.pathname]);
 
   useEffect(() => {
     // Mouse and scroll tracking (unchanged)...
@@ -470,7 +469,7 @@ function App() {
         navigate("/navigation");
         break;
       case 10:
-        navigate("/graph");
+        navigate("/filter");
         break;
       case 11:
         navigate("/signin");
@@ -601,7 +600,7 @@ function App() {
             textAlign: "center",
           }}
         >
-          <p style={{ fontFamily: "font" }}>
+          <p style={{ fontFamily: font }}>
             You seem to have an issue! Do you want to change the website?
           </p>
           <div>
@@ -631,7 +630,7 @@ function App() {
         </div>
       )}
 
-      <div
+      {/* <div
         class="testing"
         style={{
           width: "600px",
@@ -643,7 +642,7 @@ function App() {
         <button>1</button>
         <button onClick={eyeIssue}>2</button>
         <button onClick={skillIssue}>3</button>
-      </div>
+      </div> */}
     </React.StrictMode>
   );
 }

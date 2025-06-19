@@ -278,7 +278,7 @@ const TextVoice = ({
     if (inputValue.trim()) {
       sendText(inputValue);
       console.log(page);
-      if (page === "/graph") {
+      if (page === "/filter") {
         sendPredict(inputValue);
       }
     }

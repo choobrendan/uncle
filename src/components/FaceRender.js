@@ -1,20 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import React, { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 
-const FaceRender = ({X,Y}) => {
+const FaceRender = ({ X, Y }) => {
   const rendererContainer = useRef(null);
   const [loadedMesh, setLoadedMesh] = useState(null);
 
   useEffect(() => {
     if (rendererContainer.current) {
       while (rendererContainer.current.firstChild) {
-        rendererContainer.current.removeChild(rendererContainer.current.firstChild);
+        rendererContainer.current.removeChild(
+          rendererContainer.current.firstChild
+        );
       }
     }
     let mesh = null;
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "low-power",
+    });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     const canvasWidth = 320;
     const canvasHeight = window.innerHeight;
@@ -29,7 +35,12 @@ const FaceRender = ({X,Y}) => {
     }
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, canvasWidth / canvasHeight, 1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      45,
+      canvasWidth / canvasHeight,
+      1,
+      1000
+    );
     camera.position.set(0, 1, 8);
 
     // Lighting
@@ -53,16 +64,16 @@ const FaceRender = ({X,Y}) => {
 
     // Load Model
     new GLTFLoader().load(
-      '/head/scene.gltf',
+      "/head/scene.gltf",
       (gltf) => {
         mesh = gltf.scene;
         const material = new THREE.MeshStandardMaterial({
           metalness: 1,
           roughness: 0.0,
-          color: '#ffffff',
+          color: "#ffffff",
         });
 
-        new RGBELoader().load('pixelcut-export.hdr', (envMap) => {
+        new RGBELoader().load("pixelcut-export.hdr", (envMap) => {
           envMap.mapping = THREE.EquirectangularReflectionMapping;
           scene.environment = envMap;
 
@@ -87,26 +98,26 @@ const FaceRender = ({X,Y}) => {
       },
       undefined,
       (error) => {
-        console.error('Error loading model:', error);
+        console.error("Error loading model:", error);
       }
     );
-const mouse = new THREE.Vector2();
+    const mouse = new THREE.Vector2();
 
-const onMouseMove = (event) => {
-  console.log(X)
-  mouse.x = (X / window.innerWidth) * 2 - 1; // Normalized X
-  mouse.y = (Y/ window.innerHeight) * 2 - 0.75; // Normalized Y
-};
+    const onMouseMove = (event) => {
+      console.log(X);
+      mouse.x = (X / window.innerWidth) * 2 - 1; // Normalized X
+      mouse.y = (Y / window.innerHeight) * 2 - 0.75; // Normalized Y
+    };
 
-    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener("mousemove", onMouseMove);
 
     const animate = () => {
       requestAnimationFrame(animate);
 
       if (mesh) {
         // Smooth and intuitive rotation based on mouse
-        mesh.rotation.y  = mouse.x * Math.PI * 0.1 ; // Inverted Y rotation
-        mesh.rotation.x = mouse.y * Math.PI * 0.1;
+        mesh.rotation.y = mouse.x * Math.PI * 0.0; // Inverted Y rotation
+        mesh.rotation.x = mouse.y * Math.PI * 0.0;
       }
 
       renderer.render(scene, camera);
@@ -115,7 +126,7 @@ const onMouseMove = (event) => {
     animate();
 
     return () => {
-      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener("mousemove", onMouseMove);
       renderer.dispose();
     };
   }, []);

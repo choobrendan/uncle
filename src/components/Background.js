@@ -87,9 +87,9 @@ const Background = ({
               zIndex: 9,
             }}
           >
-            {/* {showRender && <HandRender />}
+            {showRender && <HandRender />}
             {showRender && <FaceRender X={gazeX} Y={gazeY} />}
-            {aboutRender === "about" && <FaceRender X={gazeX} Y={gazeY} />} */}
+            {aboutRender === "about" && <FaceRender />}
           </div>
         </div>
       )}

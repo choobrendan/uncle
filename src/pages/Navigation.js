@@ -326,7 +326,7 @@ function Navigation() {
             onClick={() => setCurrentPage("profile")}
           >
             <img
-              src="https://via.placeholder.com/150"
+              src="https://picsum.photos/id/100/50/50"
               alt="Profile"
               style={styles.profileImage}
             />
@@ -571,15 +571,19 @@ const SearchPage = () => {
       <div style={styles.searchGrid}>
         {Array(15)
           .fill(0)
-          .map((_, index) => (
-            <div key={index} style={styles.searchGridItem}>
-              <img
-                src={`https://picsum.photos/id/${200 + index}/300/300`}
-                alt="Search result"
-                style={styles.searchImage}
-              />
-            </div>
-          ))}
+          .map((_, index) => {
+            // Generate a random ID using Math.random
+            const randomId = Math.floor(Math.random() * 1000); // Random ID between 0 and 999
+            return (
+              <div key={randomId} style={styles.searchGridItem}>
+                <img
+                  src={`https://picsum.photos/id/${randomId}/300/300`}
+                  alt="Post"
+                  style={styles.profilePost}
+                />
+              </div>
+            );
+          })}
       </div>
     </div>
   );
@@ -776,15 +780,19 @@ const ProfilePage = ({ user, highlightedElement, refs }) => {
         <div style={styles.profileGrid}>
           {Array(9)
             .fill(0)
-            .map((_, index) => (
-              <div key={index} style={styles.profileGridItem}>
-                <img
-                  src={`https://picsum.photos/id/${100 + index}/300/300`}
-                  alt="Post"
-                  style={styles.profilePost}
-                />
-              </div>
-            ))}
+            .map((_, index) => {
+              // Generate a random ID using Math.random
+              const randomId = Math.floor(Math.random() * 1000); // Random ID between 0 and 999
+              return (
+                <div key={randomId} style={styles.profileGridItem}>
+                  <img
+                    src={`https://picsum.photos/id/${randomId}/300/300`}
+                    alt="Post"
+                    style={styles.profilePost}
+                  />
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>
@@ -1624,7 +1632,7 @@ const mockPosts = [
     id: 4,
     user: {
       username: "artist",
-      profilePic: "https://picsum.photos/id/68/300/300",
+      profilePic: "https://picsum.photos/id/68/300/300?random=1",
     },
     imageUrl: "https://picsum.photos/id/40/500/500",
     caption: "My latest artwork. What do you think? #art #creative",

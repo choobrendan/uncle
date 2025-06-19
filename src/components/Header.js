@@ -102,8 +102,8 @@ const Header = ({
           <a href="/navigation" style={simplifiedStyles.navLink}>
             Navigation
           </a>
-          <a href="/graph" style={simplifiedStyles.navLink}>
-            Graph
+          <a href="/filter" style={simplifiedStyles.navLink}>
+            Filter
           </a>
           <div
             style={{
@@ -155,8 +155,8 @@ const Header = ({
           Navigation
         </a>
 
-        <a className="scifi-button" href="/graph">
-          Graph
+        <a className="scifi-button" href="/filter">
+          Filter
         </a>
         <div
           style={{
